@@ -1,8 +1,8 @@
-public class Sum {
+public class SumDouble {
     public static void main(String[] args) {
         String text = String.join(" ", args) + " ";
 
-        int sum = 0;
+        double sum = 0;
         int numberStart = 0;
         boolean isPrevCharWhitespace = true;
         for (int index = 0; index < text.length(); index++) {
@@ -14,16 +14,11 @@ public class Sum {
                 isPrevCharWhitespace = false;
             }
             if (isChWhitespace && !isPrevCharWhitespace) {
-                sum += conevertToNumber(text.substring(numberStart, index));
+                sum += Double.valueOf(text.substring(numberStart, index));
                 isPrevCharWhitespace = true;
             }
         }
 
         System.out.println(sum);
     }
-
-    private static int conevertToNumber(String stringRepresentation) {
-        return Integer.valueOf(stringRepresentation);
-    }
 }
-

@@ -6,3 +6,7 @@ _*
 
 # Do not store .class files
 *.class
+
+# Extra directories and files ignoring
+out/
+./**/*.bat
