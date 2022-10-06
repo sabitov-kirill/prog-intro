@@ -7,9 +7,9 @@ public class ReverseSum extends Reverse {
 
     public void calculateMatrixData() {
         linesSum = Stream.of(linesNumbers)
-            .limit(linesCurrentCount)
-            .mapToInt(lineNumbers -> IntStream.of(lineNumbers).sum())
-            .toArray();
+                .limit(linesCurrentCount)
+                .mapToInt(lineNumbers -> IntStream.of(lineNumbers).sum())
+                .toArray();
 
         int maxLen = 0;
         for (int line = 0; line < linesCurrentCount; line++) {
@@ -29,7 +29,8 @@ public class ReverseSum extends Reverse {
         }
     }
 
-    public void printSumMatrix() {
+    @Override
+    public void print() {
         if (linesSum == null || columnsSum == null) {
             return;
         }
@@ -62,6 +63,6 @@ public class ReverseSum extends Reverse {
         }
 
         reverse.calculateMatrixData();
-        reverse.printSumMatrix();
+        reverse.print();
     }
 }

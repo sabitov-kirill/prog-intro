@@ -1,24 +1,19 @@
 import java.io.IOException;
-import java.util.stream.Stream;
 
-public class Reverse {
+public class ReverseAbc {
     protected int linesMaxCount = 4;
     protected int linesCurrentCount = 0;
-    protected int[][] linesNumbers = new int[linesMaxCount][];
+    protected String[][] linesNumbers = new String[linesMaxCount][];
 
     public void startNewLine() {
         if (linesCurrentCount >= linesMaxCount) {
             linesMaxCount *= 2;
 
-            int[][] resizedLinesNumbers = new int[linesMaxCount][];
+            String[][] resizedLinesNumbers = new String[linesMaxCount][];
             System.arraycopy(linesNumbers, 0, resizedLinesNumbers, 0, linesCurrentCount);
             linesNumbers = resizedLinesNumbers;
         }
         linesCurrentCount++;
-    }
-
-    public int parseInt(String token) {
-        return Integer.parseInt(token);
     }
 
     public void addTokenizedLine(String str) {
@@ -26,11 +21,9 @@ public class Reverse {
 
         str = str.trim();
         if (!str.isEmpty()) {
-            linesNumbers[linesCurrentCount - 1] = Stream.of(str.split("\s+"))
-                .mapToInt(Integer::valueOf)
-                .toArray();
+            linesNumbers[linesCurrentCount - 1] = str.split("\s+");
         } else {
-            linesNumbers[linesCurrentCount - 1] = new int[0];
+            linesNumbers[linesCurrentCount - 1] = new String[0];
         }
     }
 
@@ -46,7 +39,7 @@ public class Reverse {
 
     public static void main(String[] args) {
         Scanner inputScanner = new Scanner(System.in);
-        Reverse reverse = new Reverse();
+        ReverseAbc reverse = new ReverseAbc();
 
         try {
             try {

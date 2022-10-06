@@ -1,7 +1,8 @@
 import java.io.IOException;
 
 public class ReverseTranspose extends Reverse {
-    public void printTransposeMatrix() {
+    @Override
+    public void print() {
         int maxLen = 0;
         for (int line = 0; line < linesCurrentCount; line++) {
             maxLen = Math.max(maxLen, linesNumbers[line].length);
@@ -37,6 +38,6 @@ public class ReverseTranspose extends Reverse {
             System.err.println("I/O error occured while reading input stream.");
         }
 
-        reverse.printTransposeMatrix();
+        reverse.print();
     }
 }

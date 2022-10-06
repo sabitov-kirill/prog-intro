@@ -9,4 +9,4 @@ _*
 
 # Extra directories and files ignoring
 out/
-./**/*.bat
+*.bat
