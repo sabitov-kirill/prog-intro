@@ -1,5 +1,6 @@
 # Do not store hidden files and directories, including .idea project
-.*
+.vscode
+.idea
 
 # Do not store anything starting with _
 _*
@@ -7,6 +8,8 @@ _*
 # Do not store .class files
 *.class
 
-# Extra directories and files ignoring
-out/
+# Do not store windows batch scripts
 *.bat
+
+# Do not store compiled binaries
+out/
