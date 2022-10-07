@@ -1,4 +1,5 @@
 import java.io.*;
+import java.util.Arrays;
 import java.util.InputMismatchException;
 
 public class Scanner implements Closeable {
@@ -10,7 +11,7 @@ public class Scanner implements Closeable {
     private Reader source;
 
     // Default size of input buffer
-    private final int BUFFER_DEFAULT_SIZE = 128;
+    private final int BUFFER_DEFAULT_SIZE = 8192;
     // Input chars buffer
     private char[] buffer = new char[BUFFER_DEFAULT_SIZE];
     // Current possition of last read char in buffer (from source reader)
@@ -19,6 +20,8 @@ public class Scanner implements Closeable {
     private int bufferOffset;
     // Saved offset index of input buffer (used while caching and parsing specific token)
     private int bufferSavedOffset;
+    // Flag, showing whether to skip next char (part of EOL sequence) or not
+    private boolean skipEOL;
 
     // Last cached token object
     private Object cachedNextToken;
@@ -81,42 +84,64 @@ public class Scanner implements Closeable {
      * @return readed token.
      * @throws IOException
      *          thrown in case of I/O error occured while reading to internal buffer.
+     * @throws InputMismatchException
+     *          throws in case of trying to get not existing token/token of diffrent type.
      */
-    private String next(TokenPartTester tokenSeparatorTester) throws IOException {
-        String token = "";
+    private String next(TokenPartTester tokenSeparatorTester)
+            throws IOException, InputMismatchException {
+        TokenPartTester.Result prevCharTestResult = TokenPartTester.Result.NONE;
+        TokenPartTester.Result charTestResult = TokenPartTester.Result.NONE;
+        int tokenStartIndex = -1, tokenEndIndex = -1;
+        StringBuilder sb = new StringBuilder();
 
         while (true) {
+            if (skipEOL && bufferOffset <= bufferPossition && buffer[bufferOffset] == '\n') {
+                bufferOffset++;
+                skipEOL = false;
+            }
+
             // Read token (or reach possition of last char in buffer)
-            int tokenStartIndex = -1, tokenEndIndex = -1;
-            TokenPartTester.Result prevCharTestResult = TokenPartTester.Result.NONE;
-            while (bufferOffset <= bufferPossition) {
-                var charTestResult = tokenSeparatorTester.test(buffer[bufferOffset], prevCharTestResult);
-                prevCharTestResult = charTestResult;
+            while (bufferOffset <= bufferPossition && prevCharTestResult != TokenPartTester.Result.END) {
+                charTestResult = tokenSeparatorTester.test(buffer[bufferOffset], prevCharTestResult);
 
                 if (charTestResult == TokenPartTester.Result.START) {
                     tokenStartIndex = bufferOffset;
-                } else if (charTestResult == TokenPartTester.Result.END) {
-                    tokenEndIndex = bufferOffset;
-                    break;
                 }
+                if (charTestResult == TokenPartTester.Result.END ||
+                        (charTestResult = tokenSeparatorTester.test(buffer[bufferOffset],
+                                charTestResult)) == TokenPartTester.Result.END) {
+                    tokenEndIndex = bufferOffset;
+                    if (buffer[bufferOffset] == '\r') {
+                        skipEOL = true;
+                    }
+                }
+                prevCharTestResult = charTestResult;
                 bufferOffset++;
             }
 
             // Add either part of token (if last char in buffer reached), or whole token
             if (tokenStartIndex != -1 && tokenEndIndex != -1) {
-                token += new String(buffer, tokenStartIndex, tokenEndIndex - tokenStartIndex);
-                break;
+                sb.append(buffer, tokenStartIndex, tokenEndIndex - tokenStartIndex);
+                return sb.toString();
             } else if (tokenStartIndex != -1) {
-                token += new String(buffer, tokenStartIndex, bufferPossition - tokenStartIndex);
+                sb.append(buffer, tokenStartIndex, bufferOffset - tokenStartIndex);
             }
 
             // If end of token not reached - fill input buffer by reading source
             read();
+            if (tokenStartIndex != -1) {
+                tokenStartIndex = 0;
+            }
             if (!isSourceOpened) {
                 break;
             }
         }
-        return token != "" ? token : null;
+        
+        if (sb.isEmpty()) {
+            throw new InputMismatchException();
+        } else {
+            return sb.toString();
+        }
     }
 
     /**
@@ -125,8 +150,10 @@ public class Scanner implements Closeable {
      * @return next token read from InputStream/file.
      * @throws IOException
      *          thrown in case of I/O error occured while reading to internal buffer.
+     * @throws InputMismatchException
+     *          throws in case of trying to get not existing token/token of diffrent type.
      */
-    public String next() throws IOException {
+    public String next() throws IOException, InputMismatchException {
         if (cachedNextToken instanceof String) {
             bufferOffset = bufferSavedOffset;
             String val = (String) cachedNextToken;
@@ -143,8 +170,10 @@ public class Scanner implements Closeable {
      * @return next line read from InputStream/file.
      * @throws IOException
      *          thrown in case of I/O error occured while reading to internal buffer.
+     * @throws InputMismatchException
+     *          throws in case of trying to get not existing token/token of diffrent type.
      */
-    public String nextLine() throws IOException {
+    public String nextLine() throws IOException, InputMismatchException {
         if (cachedNextLine != null) {
             bufferOffset = bufferSavedOffset;
             String val = cachedNextLine;
@@ -152,8 +181,7 @@ public class Scanner implements Closeable {
             return val;
         }
 
-        String line = next(Scanner.TokenPartTester::lineTester);
-        return line != null && line.length() != 0 ? line.substring(0, line.length() - 1) : null;
+        return next(Scanner.TokenPartTester::lineTester);
     }
 
     /**
@@ -162,8 +190,10 @@ public class Scanner implements Closeable {
      * @return next word read from InputStream/file.
      * @throws IOException
      *          thrown in case of I/O error occured while reading to internal buffer.
+     * @throws InputMismatchException
+     *          throws in case of trying to get not existing token/token of diffrent type.
      */
-    public String nextWord() throws IOException {
+    public String nextWord() throws IOException, InputMismatchException {
         if (cachedNextWord != null) {
             bufferOffset = bufferSavedOffset;
             String val = cachedNextWord;
@@ -180,6 +210,8 @@ public class Scanner implements Closeable {
      * @return next integer read from InputStream/file.
      * @throws IOException
      *          thrown in case of I/O error occured while reading to internal buffer.
+     * @throws InputMismatchException
+     *          throws in case of trying to get not existing token/token of diffrent type.
      */
     public int nextInt() throws IOException, InputMismatchException {
         return nextInt(10);
@@ -192,6 +224,8 @@ public class Scanner implements Closeable {
      * @return next integer read from InputStream/file.
      * @throws IOException
      *          thrown in case of I/O error occured while reading to internal buffer.
+     * @throws InputMismatchException
+     *          throws in case of trying to get not existing token/token of diffrent type.
      */
     public int nextInt(int radix) throws IOException, InputMismatchException {
         if (cachedNextToken instanceof Integer) {
@@ -217,6 +251,8 @@ public class Scanner implements Closeable {
      * @return next long integer read from InputStream/file.
      * @throws IOException
      *          thrown in case of I/O error occured while reading to internal buffer.
+     * @throws InputMismatchException
+     *          throws in case of trying to get not existing token/token of diffrent type.
      */
     public long nextLong() throws IOException, InputMismatchException {
         if (cachedNextToken instanceof Long) {
@@ -242,6 +278,8 @@ public class Scanner implements Closeable {
      * @return next float number read from InputStream/file.
      * @throws IOException
      *          thrown in case of I/O error occured while reading to internal buffer.
+     * @throws InputMismatchException
+     *          throws in case of trying to get not existing token/token of diffrent type.
      */
     public float nextFloat() throws IOException, InputMismatchException {
         if (cachedNextToken instanceof Float) {
@@ -267,6 +305,8 @@ public class Scanner implements Closeable {
      * @return next double precision float number read from InputStream/file.
      * @throws IOException
      *          thrown in case of I/O error occured while reading to internal buffer.
+     * @throws InputMismatchException
+     *          throws in case of trying to get not existing token/token of diffrent type.
      */
     public double nextDouble() throws IOException, InputMismatchException {
         if (cachedNextToken instanceof Double) {
@@ -296,7 +336,12 @@ public class Scanner implements Closeable {
     public boolean hasNext() throws IOException {
         // Cache next token
         bufferSavedOffset = bufferOffset;
-        cachedNextToken = next();
+        try {
+            cachedNextToken = next();
+        } catch (InputMismatchException e) {
+            bufferOffset = bufferSavedOffset;
+            return false;
+        }
 
         // Swap offsets for caching
         int tempOffset = bufferSavedOffset;
@@ -316,7 +361,12 @@ public class Scanner implements Closeable {
     public boolean hasNextLine() throws IOException {
         // Cache next line
         bufferSavedOffset = bufferOffset;
-        cachedNextLine = nextLine();
+        try {
+            cachedNextLine = nextLine();
+        } catch (InputMismatchException e) {
+            bufferOffset = bufferSavedOffset;
+            return false;
+        }
 
         // Swap offsets for caching
         int tempOffset = bufferSavedOffset;
@@ -336,7 +386,12 @@ public class Scanner implements Closeable {
     public boolean hasNextWord() throws IOException {
         // Cache next line
         bufferSavedOffset = bufferOffset;
-        cachedNextWord = nextWord();
+        try {
+            cachedNextWord = nextWord();
+        } catch (InputMismatchException e) {
+            bufferOffset = bufferSavedOffset;
+            return false;
+        }
 
         // Swap offsets for caching
         int tempOffset = bufferSavedOffset;
@@ -462,20 +517,21 @@ public class Scanner implements Closeable {
             return;
         }
 
-        if (bufferPossition + 1 >= buffer.length && bufferOffset != bufferPossition) {
+        if (bufferOffset + 1 >= buffer.length) {
             bufferIncreaseSize();
         }
 
         int n = -1;
         try {
-            n = source.read(buffer, bufferPossition + 1, buffer.length - (bufferPossition + 1));
+            n = source.read(buffer, 0, buffer.length);
         } finally {
             if (n == -1) {
                 isSourceOpened = false;
             }
         }
         if (n > 0) {
-            bufferPossition += n;
+            bufferPossition = n - 1;
+            bufferOffset = 0;
         }
     }
 
@@ -484,12 +540,7 @@ public class Scanner implements Closeable {
      * Allocates memory twice as much as before and copies not offseted data.
      */
     private void bufferIncreaseSize() {
-        char[] resizedBuffer = new char[buffer.length * 2];
-        System.arraycopy(buffer, bufferOffset - 1, resizedBuffer, 0, bufferPossition - (bufferOffset - 1) + 1);
-        buffer = resizedBuffer;
-
-        bufferPossition -= bufferOffset - 1;
-        bufferOffset = 0;
+        buffer = Arrays.copyOf(buffer, buffer.length * 2);
     }
 
     /**
@@ -541,10 +592,10 @@ public class Scanner implements Closeable {
          * @return result of character testing.
          */
         public static Result lineTester(char ch, Result prevResult) {
-            if (prevResult == Result.NONE) {
+            if (prevResult == Result.NONE || prevResult == Result.END) {
                 return Result.START;
             }
-            return ch == '\n' ? Result.END : Result.PART;
+            return (ch == '\n' || ch == '\r') ? Result.END : Result.PART;
         }
 
         /**
