@@ -69,12 +69,21 @@ public class Scanner implements Closeable {
         if (!isOpened) {
             return;
         }
-        if (source instanceof Closeable) {
+        if (isSourceOpened) {
             source.close();
+            isSourceOpened = false;
         }
         isOpened = false;
-        isSourceOpened = false;
         source = null;
+    }
+
+    /**
+     * Check if scanner is opened function.
+     */
+    private void ensureOpen() {
+        if (!isOpened) {
+            throw new IllegalStateException("Scanner closed");
+        }
     }
 
     /**
@@ -89,6 +98,8 @@ public class Scanner implements Closeable {
      */
     private String next(TokenPartTester tokenSeparatorTester)
             throws IOException, InputMismatchException {
+        ensureOpen();
+
         TokenPartTester.Result prevCharTestResult = TokenPartTester.Result.NONE;
         TokenPartTester.Result charTestResult = TokenPartTester.Result.NONE;
         int tokenStartIndex = -1, tokenEndIndex = -1;
@@ -154,6 +165,8 @@ public class Scanner implements Closeable {
      *          throws in case of trying to get not existing token/token of diffrent type.
      */
     public String next() throws IOException, InputMismatchException {
+        ensureOpen();
+
         if (cachedNextToken instanceof String) {
             bufferOffset = bufferSavedOffset;
             String val = (String) cachedNextToken;
@@ -174,6 +187,8 @@ public class Scanner implements Closeable {
      *          throws in case of trying to get not existing token/token of diffrent type.
      */
     public String nextLine() throws IOException, InputMismatchException {
+        ensureOpen();
+
         if (cachedNextLine != null) {
             bufferOffset = bufferSavedOffset;
             String val = cachedNextLine;
@@ -194,6 +209,8 @@ public class Scanner implements Closeable {
      *          throws in case of trying to get not existing token/token of diffrent type.
      */
     public String nextWord() throws IOException, InputMismatchException {
+        ensureOpen();
+
         if (cachedNextWord != null) {
             bufferOffset = bufferSavedOffset;
             String val = cachedNextWord;
@@ -228,6 +245,8 @@ public class Scanner implements Closeable {
      *          throws in case of trying to get not existing token/token of diffrent type.
      */
     public int nextInt(int radix) throws IOException, InputMismatchException {
+        ensureOpen();
+
         if (cachedNextToken instanceof Integer) {
             bufferOffset = bufferSavedOffset;
             int val = ((Integer) cachedNextToken).intValue();
@@ -255,6 +274,8 @@ public class Scanner implements Closeable {
      *          throws in case of trying to get not existing token/token of diffrent type.
      */
     public long nextLong() throws IOException, InputMismatchException {
+        ensureOpen();
+
         if (cachedNextToken instanceof Long) {
             bufferOffset = bufferSavedOffset;
             long val = ((Long) cachedNextToken);
@@ -282,6 +303,8 @@ public class Scanner implements Closeable {
      *          throws in case of trying to get not existing token/token of diffrent type.
      */
     public float nextFloat() throws IOException, InputMismatchException {
+        ensureOpen();
+
         if (cachedNextToken instanceof Float) {
             bufferOffset = bufferSavedOffset;
             float val = ((Float) cachedNextToken);
@@ -309,6 +332,8 @@ public class Scanner implements Closeable {
      *          throws in case of trying to get not existing token/token of diffrent type.
      */
     public double nextDouble() throws IOException, InputMismatchException {
+        ensureOpen();
+
         if (cachedNextToken instanceof Double) {
             bufferOffset = bufferSavedOffset;
             double val = ((Double) cachedNextToken);
@@ -334,6 +359,8 @@ public class Scanner implements Closeable {
      *          thrown in case of I/O error occured while reading to internal buffer.
      */
     public boolean hasNext() throws IOException {
+        ensureOpen();
+
         // Cache next token
         bufferSavedOffset = bufferOffset;
         try {
@@ -359,6 +386,8 @@ public class Scanner implements Closeable {
      *          thrown in case of I/O error occured while reading to internal buffer.
      */
     public boolean hasNextLine() throws IOException {
+        ensureOpen();
+
         // Cache next line
         bufferSavedOffset = bufferOffset;
         try {
@@ -384,6 +413,8 @@ public class Scanner implements Closeable {
      *          thrown in case of I/O error occured while reading to internal buffer.
      */
     public boolean hasNextWord() throws IOException {
+        ensureOpen();
+
         // Cache next line
         bufferSavedOffset = bufferOffset;
         try {
@@ -409,6 +440,8 @@ public class Scanner implements Closeable {
      *          thrown in case of I/O error occured while reading to internal buffer.
      */
     public boolean hasNextInt() throws IOException, InputMismatchException {
+        ensureOpen();
+
         // Cache nest token
         bufferSavedOffset = bufferOffset;
         String token = next();
@@ -435,6 +468,8 @@ public class Scanner implements Closeable {
      *          thrown in case of I/O error occured while reading to internal buffer.
      */
     public boolean hasNextLong() throws IOException, InputMismatchException {
+        ensureOpen();
+
         // Cache nest token
         bufferSavedOffset = bufferOffset;
         String token = next();
@@ -461,6 +496,8 @@ public class Scanner implements Closeable {
      *          thrown in case of I/O error occured while reading to internal buffer.
      */
     public boolean hasNextFloat() throws IOException, InputMismatchException {
+        ensureOpen();
+
         // Cache nest token
         bufferSavedOffset = bufferOffset;
         String token = next();
@@ -487,6 +524,8 @@ public class Scanner implements Closeable {
      *          thrown in case of I/O error occured while reading to internal buffer.
      */
     public boolean hasNextDouble() throws IOException, InputMismatchException {
+        ensureOpen();
+
         // Cache nest token
         bufferSavedOffset = bufferOffset;
         String token = next();
