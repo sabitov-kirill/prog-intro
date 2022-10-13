@@ -1,19 +1,28 @@
-import java.io.IOException;
+package reverse;
 
-public class ReverseAbc {
+import scanner.Scanner;
+
+import java.io.IOException;
+import java.util.stream.Stream;
+
+public class Reverse {
     protected int linesMaxCount = 4;
     protected int linesCurrentCount = 0;
-    protected String[][] linesNumbers = new String[linesMaxCount][];
+    protected int[][] linesNumbers = new int[linesMaxCount][];
 
     public void startNewLine() {
         if (linesCurrentCount >= linesMaxCount) {
             linesMaxCount *= 2;
 
-            String[][] resizedLinesNumbers = new String[linesMaxCount][];
+            int[][] resizedLinesNumbers = new int[linesMaxCount][];
             System.arraycopy(linesNumbers, 0, resizedLinesNumbers, 0, linesCurrentCount);
             linesNumbers = resizedLinesNumbers;
         }
         linesCurrentCount++;
+    }
+
+    public int parseInt(String token) {
+        return Integer.parseInt(token);
     }
 
     public void addTokenizedLine(String str) {
@@ -21,9 +30,11 @@ public class ReverseAbc {
 
         str = str.trim();
         if (!str.isEmpty()) {
-            linesNumbers[linesCurrentCount - 1] = str.split("\s+");
+            linesNumbers[linesCurrentCount - 1] = Stream.of(str.split("\s+"))
+                .mapToInt(Integer::valueOf)
+                .toArray();
         } else {
-            linesNumbers[linesCurrentCount - 1] = new String[0];
+            linesNumbers[linesCurrentCount - 1] = new int[0];
         }
     }
 
@@ -39,7 +50,7 @@ public class ReverseAbc {
 
     public static void main(String[] args) {
         Scanner inputScanner = new Scanner(System.in);
-        ReverseAbc reverse = new ReverseAbc();
+        Reverse reverse = new Reverse();
 
         try {
             try {
@@ -51,7 +62,7 @@ public class ReverseAbc {
                 inputScanner.close();
             }
         } catch (IOException e) {
-            System.err.println("I/O error occured while reading input stream.");
+            System.err.println("I/O error occurred while reading input stream.");
         }
         reverse.print();
     }

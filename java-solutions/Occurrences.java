@@ -1,12 +1,11 @@
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class Occurances {
-    private List<Integer> indices;
+public class Occurrences {
+    private final List<Integer> indices;
 
-    public Occurances(int firstIndex) {
-        indices = new ArrayList<>(Arrays.asList(firstIndex));
+    public Occurrences(int firstIndex) {
+        indices = new ArrayList<>(List.of(firstIndex));
     }
 
     public void addIndex(int index) {
@@ -36,6 +35,6 @@ public class Occurances {
             sb.append(' ');
         }
 
-        return sb.substring(0, sb.length() - 1).toString();
+        return sb.substring(0, sb.length() - 1);
     }
 }

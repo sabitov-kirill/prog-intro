@@ -1,46 +1,44 @@
+package wordstat;
+
+import scanner.Scanner;
+
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 
 public abstract class WordStat {
     protected abstract void performWrite(BufferedWriter writer) throws IOException;
-    protected abstract void tokenConsum(String token);
+    protected abstract void tokenConsume(String token);
 
     public void read(String inputFileName)
-            throws FileNotFoundException, UnsupportedEncodingException, IOException {
-        Scanner in = new Scanner(inputFileName);
-        try {
+            throws IOException {
+        try (Scanner in = new Scanner(inputFileName)) {
             while (in.hasNextWord()) {
                 String word = in.nextWord();
-                tokenConsum(word);
+                tokenConsume(word);
             }
-        } finally {
-            in.close();
         }
     }
 
     public void write(String outputFileName)
-            throws FileNotFoundException, UnsupportedEncodingException, IOException {
-        BufferedWriter out = new BufferedWriter(
+            throws IOException {
+
+        try (BufferedWriter out = new BufferedWriter(
                 new OutputStreamWriter(
                         new FileOutputStream(outputFileName),
-                        "utf8"
+                        StandardCharsets.UTF_8
                 )
-        );
-
-        try {
+        )) {
             performWrite(out);
-        } finally {
-            out.close();
         }
     }
     
     public void perform(String[] args) {
-        String inFileName = null, outFileName = null;
         if (args.length < 2) {
             System.err.println("Input and/or output files isn't provided.");
             return;
         }
-        inFileName = args[0];
-        outFileName = args[1];
+        String inFileName = args[0];
+        String outFileName = args[1];
 
         try {
             read(inFileName);
@@ -50,7 +48,7 @@ public abstract class WordStat {
         } catch (UnsupportedEncodingException e) {
             System.err.println("Utf8 encoding isn't supported on your platform: " + e.getMessage());
         } catch (IOException e) {
-            System.err.println("Error occured while reading/writing files: " + e.getMessage());
+            System.err.println("Error occurred while reading/writing files: " + e.getMessage());
         }
     }
 }

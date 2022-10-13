@@ -1,3 +1,7 @@
+package reverse;
+
+import scanner.Scanner;
+
 import java.io.IOException;
 
 public class ReverseTranspose extends Reverse {
@@ -35,7 +39,7 @@ public class ReverseTranspose extends Reverse {
                 inputScanner.close();
             }
         } catch (IOException e) {
-            System.err.println("I/O error occured while reading input stream.");
+            System.err.println("I/O error occurred while reading input stream.");
         }
 
         reverse.print();

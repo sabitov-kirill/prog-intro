@@ -1,3 +1,5 @@
+package sum;
+
 public class SumDouble {
     public static void main(String[] args) {
         String text = String.join(" ", args) + " ";
@@ -14,7 +16,7 @@ public class SumDouble {
                 isPrevCharWhitespace = false;
             }
             if (isChWhitespace && !isPrevCharWhitespace) {
-                sum += Double.valueOf(text.substring(numberStart, index));
+                sum += Double.parseDouble(text.substring(numberStart, index));
                 isPrevCharWhitespace = true;
             }
         }

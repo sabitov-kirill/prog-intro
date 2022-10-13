@@ -1,3 +1,5 @@
+package sum;
+
 public class Sum {
     public static void main(String[] args) {
         String text = String.join(" ", args) + " ";
@@ -14,7 +16,7 @@ public class Sum {
                 isPrevCharWhitespace = false;
             }
             if (isChWhitespace && !isPrevCharWhitespace) {
-                sum += conevertToNumber(text.substring(numberStart, index));
+                sum += convertToNumber(text.substring(numberStart, index));
                 isPrevCharWhitespace = true;
             }
         }
@@ -22,8 +24,8 @@ public class Sum {
         System.out.println(sum);
     }
 
-    private static int conevertToNumber(String stringRepresentation) {
-        return Integer.valueOf(stringRepresentation);
+    private static int convertToNumber(String stringRepresentation) {
+        return Integer.parseInt(stringRepresentation);
     }
 }
 
