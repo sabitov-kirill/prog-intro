@@ -9,6 +9,7 @@ public abstract class WordStat {
     protected abstract void performWrite(BufferedWriter writer) throws IOException;
     protected abstract void tokenConsume(String token);
 
+
     public void read(String inputFileName)
             throws IOException {
         try (Scanner in = new Scanner(inputFileName)) {

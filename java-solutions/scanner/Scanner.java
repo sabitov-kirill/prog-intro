@@ -126,6 +126,7 @@ public class Scanner implements Closeable {
                         skipEOL = true;
                     }
                 }
+
                 prevCharTestResult = charTestResult;
                 bufferOffset++;
             }
