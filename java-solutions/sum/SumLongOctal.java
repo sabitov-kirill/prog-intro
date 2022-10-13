@@ -1,3 +1,5 @@
+package sum;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,16 +17,16 @@ public class SumLongOctal {
 
     private static List<String> tokenize(String input) {
         List<String> tokens = new ArrayList<>();
-        String numberString = new String();
-        Boolean isPrevCharWhitespace = true;
+        StringBuilder numberString = new StringBuilder();
+        boolean isPrevCharWhitespace = true;
 
         for (char ch : (input + " ").toCharArray()) {
             if (!Character.isWhitespace(ch)) {
-                numberString += ch;
+                numberString.append(ch);
                 isPrevCharWhitespace = false;
             } else if (!isPrevCharWhitespace) {
-                tokens.add(numberString);
-                numberString = "";
+                tokens.add(numberString.toString());
+                numberString = new StringBuilder();
                 isPrevCharWhitespace = true;
             }
         }

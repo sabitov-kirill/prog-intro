@@ -1,32 +1,34 @@
+import wordstat.WordStat;
+
 import java.io.*;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
 public class Wspp extends WordStat {
-    private Map<String, Occurances> occurances = new LinkedHashMap<>();
+    private final Map<String, Occurrences> occurrences = new LinkedHashMap<>();
     private int tokensCount = 0;
 
-    private void addNewOccurances(String token) {
+    private void addNewOccurrences(String token) {
         tokensCount++;
         token = token.toLowerCase();
-        Occurances oldValue = occurances.get(token);
+        Occurrences oldValue = occurrences.get(token);
         if (oldValue == null) {
-            oldValue = occurances.put(token, new Occurances(tokensCount));
+            occurrences.put(token, new Occurrences(tokensCount));
         } else {
             oldValue.addIndex(tokensCount);
         }
     }
 
     @Override
-    protected void tokenConsum(String token) {
-        addNewOccurances(token);
+    protected void tokenConsume(String token) {
+        addNewOccurrences(token);
     }
 
     @Override
     protected void performWrite(BufferedWriter writer) throws IOException {
-        for (Entry<String, Occurances> occurency : occurances.entrySet()) {
-            writer.write(occurency.getValue().toString(occurency.getKey()));
+        for (Entry<String, Occurrences> occurrence : occurrences.entrySet()) {
+            writer.write(occurrence.getValue().toString(occurrence.getKey()));
             writer.newLine();
         }
     }

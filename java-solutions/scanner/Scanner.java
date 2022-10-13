@@ -1,21 +1,24 @@
+package scanner;
+
 import java.io.*;
 import java.util.Arrays;
 import java.util.InputMismatchException;
 
 public class Scanner implements Closeable {
-    // Flag, showing wether scanner is opened and ready to use
+    public static final String DEFAULT_ENCODING = "utf8";
+    // Flag, showing whether scanner is opened and ready to use
     private boolean isOpened;
-    // Flag, showing wether source reader is opened and its sream end is not reached
+    // Flag, showing whether source reader is opened and its stream end is not reached
     private boolean isSourceOpened;
-    // Scanner input source reader
+    // Scanner.Scanner input source reader
     private Reader source;
 
     // Default size of input buffer
     private final int BUFFER_DEFAULT_SIZE = 8192;
     // Input chars buffer
     private char[] buffer = new char[BUFFER_DEFAULT_SIZE];
-    // Current possition of last read char in buffer (from source reader)
-    private int bufferPossition = -1;
+    // Current position of last read char in buffer (from source reader)
+    private int bufferPosition = -1;
     // Current offset index of input buffer
     private int bufferOffset;
     // Saved offset index of input buffer (used while caching and parsing specific token)
@@ -31,7 +34,7 @@ public class Scanner implements Closeable {
     private String cachedNextWord;
 
     /**
-     * Scanner constructor by file name.
+     * Scanner.Scanner constructor by file name.
      * 
      * @param inFileName name of input file, to create reader from.
      * @throws FileNotFoundException
@@ -43,14 +46,14 @@ public class Scanner implements Closeable {
             throws FileNotFoundException, UnsupportedEncodingException {
         source = new InputStreamReader(
                 new FileInputStream(inFileName),
-                "utf8"
+                DEFAULT_ENCODING
         );
         isSourceOpened = true;
         isOpened = true;
     }
 
     /**
-     * Scanner constructor by input stream.
+     * Scanner.Scanner constructor by input stream.
      * 
      * @param in input stream to create reader from (ex. System.in).
      */
@@ -69,10 +72,7 @@ public class Scanner implements Closeable {
         if (!isOpened) {
             return;
         }
-        if (isSourceOpened) {
-            source.close();
-            isSourceOpened = false;
-        }
+        source.close();
         isOpened = false;
         source = null;
     }
@@ -82,37 +82,37 @@ public class Scanner implements Closeable {
      */
     private void ensureOpen() {
         if (!isOpened) {
-            throw new IllegalStateException("Scanner closed");
+            throw new IllegalStateException("Scanner.Scanner closed");
         }
     }
 
     /**
      * Read next token from InputStream/file.
      * 
-     * @param tokenSeparatorTester predicate to check if charater is token separator.
-     * @return readed token.
+     * @param tokenSeparatorTester predicate to check if character is token separator.
+     * @return read token.
      * @throws IOException
-     *          thrown in case of I/O error occured while reading to internal buffer.
+     *          thrown in case of I/O error occurred while reading to internal buffer.
      * @throws InputMismatchException
-     *          throws in case of trying to get not existing token/token of diffrent type.
+     *          throws in case of trying to get not existing token/token of different type.
      */
     private String next(TokenPartTester tokenSeparatorTester)
             throws IOException, InputMismatchException {
         ensureOpen();
 
+        TokenPartTester.Result charTestResult;
         TokenPartTester.Result prevCharTestResult = TokenPartTester.Result.NONE;
-        TokenPartTester.Result charTestResult = TokenPartTester.Result.NONE;
         int tokenStartIndex = -1, tokenEndIndex = -1;
         StringBuilder sb = new StringBuilder();
 
-        while (true) {
-            if (skipEOL && bufferOffset <= bufferPossition && buffer[bufferOffset] == '\n') {
+        do {
+            if (skipEOL && bufferOffset <= bufferPosition && buffer[bufferOffset] == '\n') {
                 bufferOffset++;
                 skipEOL = false;
             }
 
-            // Read token (or reach possition of last char in buffer)
-            while (bufferOffset <= bufferPossition && prevCharTestResult != TokenPartTester.Result.END) {
+            // Read token (or reach position of last char in buffer)
+            while (bufferOffset <= bufferPosition && prevCharTestResult != TokenPartTester.Result.END) {
                 charTestResult = tokenSeparatorTester.test(buffer[bufferOffset], prevCharTestResult);
 
                 if (charTestResult == TokenPartTester.Result.START) {
@@ -143,10 +143,7 @@ public class Scanner implements Closeable {
             if (tokenStartIndex != -1) {
                 tokenStartIndex = 0;
             }
-            if (!isSourceOpened) {
-                break;
-            }
-        }
+        } while (isSourceOpened);
         
         if (sb.isEmpty()) {
             throw new InputMismatchException();
@@ -160,16 +157,15 @@ public class Scanner implements Closeable {
      * 
      * @return next token read from InputStream/file.
      * @throws IOException
-     *          thrown in case of I/O error occured while reading to internal buffer.
+     *          thrown in case of I/O error occurred while reading to internal buffer.
      * @throws InputMismatchException
-     *          throws in case of trying to get not existing token/token of diffrent type.
+     *          throws in case of trying to get not existing token/token of different type.
      */
     public String next() throws IOException, InputMismatchException {
         ensureOpen();
 
-        if (cachedNextToken instanceof String) {
+        if (cachedNextToken instanceof String val) {
             bufferOffset = bufferSavedOffset;
-            String val = (String) cachedNextToken;
             cachedNextToken = null;
             return val;
         }
@@ -182,9 +178,9 @@ public class Scanner implements Closeable {
      * 
      * @return next line read from InputStream/file.
      * @throws IOException
-     *          thrown in case of I/O error occured while reading to internal buffer.
+     *          thrown in case of I/O error occurred while reading to internal buffer.
      * @throws InputMismatchException
-     *          throws in case of trying to get not existing token/token of diffrent type.
+     *          throws in case of trying to get not existing token/token of different type.
      */
     public String nextLine() throws IOException, InputMismatchException {
         ensureOpen();
@@ -204,9 +200,9 @@ public class Scanner implements Closeable {
      * 
      * @return next word read from InputStream/file.
      * @throws IOException
-     *          thrown in case of I/O error occured while reading to internal buffer.
+     *          thrown in case of I/O error occurred while reading to internal buffer.
      * @throws InputMismatchException
-     *          throws in case of trying to get not existing token/token of diffrent type.
+     *          throws in case of trying to get not existing token/token of different type.
      */
     public String nextWord() throws IOException, InputMismatchException {
         ensureOpen();
@@ -226,9 +222,9 @@ public class Scanner implements Closeable {
      * 
      * @return next integer read from InputStream/file.
      * @throws IOException
-     *          thrown in case of I/O error occured while reading to internal buffer.
+     *          thrown in case of I/O error occurred while reading to internal buffer.
      * @throws InputMismatchException
-     *          throws in case of trying to get not existing token/token of diffrent type.
+     *          throws in case of trying to get not existing token/token of different type.
      */
     public int nextInt() throws IOException, InputMismatchException {
         return nextInt(10);
@@ -240,16 +236,15 @@ public class Scanner implements Closeable {
      * @param radix radix of parsing integer.
      * @return next integer read from InputStream/file.
      * @throws IOException
-     *          thrown in case of I/O error occured while reading to internal buffer.
+     *          thrown in case of I/O error occurred while reading to internal buffer.
      * @throws InputMismatchException
-     *          throws in case of trying to get not existing token/token of diffrent type.
+     *          throws in case of trying to get not existing token/token of different type.
      */
     public int nextInt(int radix) throws IOException, InputMismatchException {
         ensureOpen();
 
-        if (cachedNextToken instanceof Integer) {
+        if (cachedNextToken instanceof Integer val) {
             bufferOffset = bufferSavedOffset;
-            int val = ((Integer) cachedNextToken).intValue();
             cachedNextToken = null;
             return val;
         }
@@ -269,16 +264,15 @@ public class Scanner implements Closeable {
      * 
      * @return next long integer read from InputStream/file.
      * @throws IOException
-     *          thrown in case of I/O error occured while reading to internal buffer.
+     *          thrown in case of I/O error occurred while reading to internal buffer.
      * @throws InputMismatchException
-     *          throws in case of trying to get not existing token/token of diffrent type.
+     *          throws in case of trying to get not existing token/token of different type.
      */
     public long nextLong() throws IOException, InputMismatchException {
         ensureOpen();
 
-        if (cachedNextToken instanceof Long) {
+        if (cachedNextToken instanceof Long val) {
             bufferOffset = bufferSavedOffset;
-            long val = ((Long) cachedNextToken);
             cachedNextToken = null;
             return val;
         }
@@ -298,16 +292,15 @@ public class Scanner implements Closeable {
      * 
      * @return next float number read from InputStream/file.
      * @throws IOException
-     *          thrown in case of I/O error occured while reading to internal buffer.
+     *          thrown in case of I/O error occurred while reading to internal buffer.
      * @throws InputMismatchException
-     *          throws in case of trying to get not existing token/token of diffrent type.
+     *          throws in case of trying to get not existing token/token of different type.
      */
     public float nextFloat() throws IOException, InputMismatchException {
         ensureOpen();
 
-        if (cachedNextToken instanceof Float) {
+        if (cachedNextToken instanceof Float val) {
             bufferOffset = bufferSavedOffset;
-            float val = ((Float) cachedNextToken);
             cachedNextToken = null;
             return val;
         }
@@ -327,16 +320,15 @@ public class Scanner implements Closeable {
      * 
      * @return next double precision float number read from InputStream/file.
      * @throws IOException
-     *          thrown in case of I/O error occured while reading to internal buffer.
+     *          thrown in case of I/O error occurred while reading to internal buffer.
      * @throws InputMismatchException
-     *          throws in case of trying to get not existing token/token of diffrent type.
+     *          throws in case of trying to get not existing token/token of different type.
      */
     public double nextDouble() throws IOException, InputMismatchException {
         ensureOpen();
 
-        if (cachedNextToken instanceof Double) {
+        if (cachedNextToken instanceof Double val) {
             bufferOffset = bufferSavedOffset;
-            double val = ((Double) cachedNextToken);
             cachedNextToken = null;
             return val;
         }
@@ -356,7 +348,7 @@ public class Scanner implements Closeable {
      * 
      * @return whether next token can be read from InputStream/file or not.
      * @throws IOException
-     *          thrown in case of I/O error occured while reading to internal buffer.
+     *          thrown in case of I/O error occurred while reading to internal buffer.
      */
     public boolean hasNext() throws IOException {
         ensureOpen();
@@ -383,7 +375,7 @@ public class Scanner implements Closeable {
      * 
      * @return whether next line can be read from InputStream/file or not.
      * @throws IOException
-     *          thrown in case of I/O error occured while reading to internal buffer.
+     *          thrown in case of I/O error occurred while reading to internal buffer.
      */
     public boolean hasNextLine() throws IOException {
         ensureOpen();
@@ -410,7 +402,7 @@ public class Scanner implements Closeable {
      * 
      * @return whether next word can be read from InputStream/file or not.
      * @throws IOException
-     *          thrown in case of I/O error occured while reading to internal buffer.
+     *          thrown in case of I/O error occurred while reading to internal buffer.
      */
     public boolean hasNextWord() throws IOException {
         ensureOpen();
@@ -437,7 +429,7 @@ public class Scanner implements Closeable {
      * 
      * @return whether next integer can be read from InputStream/file or not.
      * @throws IOException
-     *          thrown in case of I/O error occured while reading to internal buffer.
+     *          thrown in case of I/O error occurred while reading to internal buffer.
      */
     public boolean hasNextInt() throws IOException, InputMismatchException {
         ensureOpen();
@@ -457,7 +449,7 @@ public class Scanner implements Closeable {
         bufferSavedOffset = bufferOffset;
         bufferOffset = tempOffset;
 
-        return cachedNextToken != null;
+        return true;
     }
 
     /**
@@ -465,7 +457,7 @@ public class Scanner implements Closeable {
      * 
      * @return whether next long integer can be read from InputStream/file or not.
      * @throws IOException
-     *          thrown in case of I/O error occured while reading to internal buffer.
+     *          thrown in case of I/O error occurred while reading to internal buffer.
      */
     public boolean hasNextLong() throws IOException, InputMismatchException {
         ensureOpen();
@@ -485,7 +477,7 @@ public class Scanner implements Closeable {
         bufferSavedOffset = bufferOffset;
         bufferOffset = tempOffset;
 
-        return cachedNextToken != null;
+        return true;
     }
 
     /**
@@ -493,7 +485,7 @@ public class Scanner implements Closeable {
      * 
      * @return whether next float number can be read from InputStream/file or not.
      * @throws IOException
-     *          thrown in case of I/O error occured while reading to internal buffer.
+     *          thrown in case of I/O error occurred while reading to internal buffer.
      */
     public boolean hasNextFloat() throws IOException, InputMismatchException {
         ensureOpen();
@@ -513,7 +505,7 @@ public class Scanner implements Closeable {
         bufferSavedOffset = bufferOffset;
         bufferOffset = tempOffset;
 
-        return cachedNextToken != null;
+        return true;
     }
 
     /**
@@ -521,7 +513,7 @@ public class Scanner implements Closeable {
      * 
      * @return whether next double precision float number can be read from InputStream/file or not.
      * @throws IOException
-     *          thrown in case of I/O error occured while reading to internal buffer.
+     *          thrown in case of I/O error occurred while reading to internal buffer.
      */
     public boolean hasNextDouble() throws IOException, InputMismatchException {
         ensureOpen();
@@ -541,15 +533,15 @@ public class Scanner implements Closeable {
         bufferSavedOffset = bufferOffset;
         bufferOffset = tempOffset;
 
-        return cachedNextToken != null;
+        return true;
     }
 
     /**
      * Fill input buffer, by reading source reader.
-     * Automaticly increases buffer size if its already full.
+     * Automatically increases buffer size if it's already full.
      * 
      * @throws IOException
-     *          thrown in case I/O error occures while read.
+     *          thrown in case I/O error occurs while read.
      */
     private void read() throws IOException {
         if (!isOpened || !isSourceOpened) {
@@ -569,14 +561,14 @@ public class Scanner implements Closeable {
             }
         }
         if (n > 0) {
-            bufferPossition = n - 1;
+            bufferPosition = n - 1;
             bufferOffset = 0;
         }
     }
 
     /**
      * Input buffer increase size function.
-     * Allocates memory twice as much as before and copies not offseted data.
+     * Allocates memory twice as much as before and copies not offset data.
      */
     private void bufferIncreaseSize() {
         buffer = Arrays.copyOf(buffer, buffer.length * 2);
@@ -589,29 +581,29 @@ public class Scanner implements Closeable {
     @FunctionalInterface
     private interface TokenPartTester {
         /**
-         * Enum, resposible for showing result of char test.
+         * Enum, responsible for showing result of char test.
          */
-        public enum Result {
-            START, PART, END, NONE
+        enum Result {
+            NONE, START, PART, END
         }
 
         /**
-         * Test char to beloning to specific type of token.
+         * Test char to belonging to specific type of token.
          * 
          * @param ch - testing character.
          * @param prevResult - result of testing previous character.
          * @return result of character testing.
          */
-        public Result test(char ch, Result prevResult);
+        Result test(char ch, Result prevResult);
 
         /**
-         * Test char to beloning to any token, separated by whitespaces.
+         * Test char to belonging to any token, separated by whitespaces.
          * 
          * @param ch - testing character.
          * @param prevResult - result of testing previous character.
          * @return result of character testing.
          */
-        public static Result tokenTester(char ch, Result prevResult) {
+        static Result tokenTester(char ch, Result prevResult) {
             boolean chWhitespace = Character.isWhitespace(ch);
 
             if (!chWhitespace && prevResult == Result.NONE) {
@@ -624,13 +616,13 @@ public class Scanner implements Closeable {
         }
 
         /**
-         * Test char to beloning to line.
+         * Test char to belonging to line.
          * 
          * @param ch - testing character.
          * @param prevResult - result of testing previous character.
          * @return result of character testing.
          */
-        public static Result lineTester(char ch, Result prevResult) {
+        static Result lineTester(char ch, Result prevResult) {
             if (prevResult == Result.NONE || prevResult == Result.END) {
                 return Result.START;
             }
@@ -638,13 +630,13 @@ public class Scanner implements Closeable {
         }
 
         /**
-         * Test char to beloning to word.
+         * Test char to belonging to word.
          * 
          * @param ch - testing character.
          * @param prevResult - result of testing previous character.
          * @return result of character testing.
          */
-        public static Result wordTester(char ch, Result prevResult) {
+        static Result wordTester(char ch, Result prevResult) {
             boolean chWordPart = isCharWordPart(ch);
 
             if (chWordPart && prevResult == Result.NONE) {

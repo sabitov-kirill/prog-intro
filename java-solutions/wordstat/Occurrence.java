@@ -1,8 +1,10 @@
-public class Occurance {
-    public int count;
-    public String token;
+package wordstat;
 
-    public Occurance(String token) {
+public class Occurrence {
+    public int count;
+    public final String token;
+
+    public Occurrence(String token) {
         count = 1;
         this.token = token.toLowerCase();
     }

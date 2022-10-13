@@ -1,3 +1,7 @@
+package reverse;
+
+import scanner.Scanner;
+
 import java.io.IOException;
 import java.util.stream.*;
 
@@ -59,7 +63,7 @@ public class ReverseSum extends Reverse {
                 inputScanner.close();
             }
         } catch (IOException e) {
-            System.err.println("I/O error occured while reading input stream.");
+            System.err.println("I/O error occurred while reading input stream.");
         }
 
         reverse.calculateMatrixData();

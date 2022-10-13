@@ -1,3 +1,5 @@
+package runme;
+
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
@@ -87,10 +89,6 @@ public final class RunMe {
 
 
     private static void key4(final byte[] password) {
-//        for (long i = 10000000000000000L; i < Long.MAX_VALUE; i++) {
-//            if ((i ^ (i >>> 32)) == 8329482348347087432L) {
-//            }
-//        }
         print(4, 8329482346525171288L, password);
     }
 
@@ -125,9 +123,7 @@ public final class RunMe {
         final String plural = "classes";
         // The total number of occurrences
         final int total = 353 + 18 + 2; // + 2 + 1
-        if (total != 0) {
-            print(7, (singular + ":" + plural + ":" + total).hashCode(), password);
-        }
+        print(7, (singular + ":" + plural + ":" + total).hashCode(), password);
     }
 
 
@@ -136,9 +132,7 @@ public final class RunMe {
         // https://docs.oracle.com/javase/webdesign/other/im/oralogo_small.gif
 
         final int number = 537;
-        if (number != 0) {
-            print(8, number, password);
-        }
+        print(8, number, password);
     }
 
 
@@ -146,10 +140,6 @@ public final class RunMe {
     private static final int SMALL_REPEAT_COUNT = 10_000_000;
 
     private static void key9(final byte[] password) {
-        // String repeated = "";
-        // for (int i = 0; i < SMALL_REPEAT_COUNT; i++) {
-        //     repeated += PATTERN;
-        // }
 
         String repeated = PATTERN.repeat(SMALL_REPEAT_COUNT);
 
@@ -180,15 +170,6 @@ public final class RunMe {
 
 
     private static void key12(final byte[] password) {
-        // final BigInteger year = BigInteger.valueOf(-2022);
-        // final BigInteger prime = BigInteger.valueOf(PRIME);
-
-        // final long result = Stream
-        //         .iterate(BigInteger.ZERO, BigInteger.ONE::add)
-        //         .parallel()
-        //         .filter(i -> year.multiply(i).add(prime).multiply(i).compareTo(BigInteger.ZERO) > 0)
-        //         .mapToLong(i -> i.longValue() * password[i.intValue() % password.length])
-        //         .sum();
 
         final long result = LongStream
                 .rangeClosed(0, PRIME / 2022)
@@ -209,13 +190,6 @@ public final class RunMe {
         }
         print(13, result, password);
     }
-
-    // private static void key13(final byte[] password, final long depth, final long result) {
-    //     if (depth < MAX_DEPTH) {
-    //         key13(password, depth + 1, (result ^ 234782022) + (result << 2) + depth * 17);
-    //     } else {
-    //     }
-    // }
 
 
     private static void key14(final byte[] password) {
