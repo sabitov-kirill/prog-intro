@@ -5,7 +5,8 @@ import java.util.function.BiConsumer;
 public enum MarkupType {
     MARKDOWN(Element::toMarkdown),
     HTML(Element::toHtml),
-    TEX(Element::toTex);
+    TEX(Element::toTex),
+    BBCODE(Element::toBBCode);
 
     public final BiConsumer<Element, StringBuilder> elementToMarkup;
 

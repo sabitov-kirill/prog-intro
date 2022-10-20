@@ -24,4 +24,11 @@ public interface Element {
      * @param sb - string builder to apply element markup representation in.
      */
     void toTex(StringBuilder sb);
+
+    /**
+     * Convert element to BBCode markup representation function.
+     *
+     * @param sb - string builder to apply element markup representation in.
+     */
+    void toBBCode(StringBuilder sb);
 }

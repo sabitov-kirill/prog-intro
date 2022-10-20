@@ -9,7 +9,8 @@ public class Paragraph extends AbstractElement implements BlockElement {
         super(Map.of(
                 MarkupType.MARKDOWN, new MarkupTags("", ""),
                 MarkupType.HTML, new MarkupTags("", ""),
-                MarkupType.TEX, new MarkupTags("", "")
+                MarkupType.TEX, new MarkupTags("", ""),
+                MarkupType.BBCODE, new MarkupTags("", "")
         ), elements);
     }
 }

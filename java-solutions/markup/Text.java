@@ -1,5 +1,7 @@
 package markup;
 
+import java.util.List;
+
 public class Text implements SpanElement {
     private final String text;
 
@@ -23,6 +25,11 @@ public class Text implements SpanElement {
 
     @Override
     public void toTex(StringBuilder sb) {
+        printText(sb);
+    }
+
+    @Override
+    public void toBBCode(StringBuilder sb) {
         printText(sb);
     }
 }

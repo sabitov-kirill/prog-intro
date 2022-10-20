@@ -8,7 +8,8 @@ public class Strong extends AbstractElement implements SpanElement {
         super(Map.of(
                 MarkupType.MARKDOWN, new MarkupTags("__", "__"),
                 MarkupType.HTML, new MarkupTags("<strong>", "</strong>"),
-                MarkupType.TEX, new MarkupTags("\\textbf{", "}")
+                MarkupType.TEX, new MarkupTags("\\textbf{", "}"),
+                MarkupType.BBCODE, new MarkupTags("[b]", "[/b]")
         ), elements);
     }
 }

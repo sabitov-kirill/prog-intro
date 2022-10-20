@@ -8,7 +8,8 @@ public class Strikeout extends AbstractElement implements SpanElement {
         super(Map.of(
                 MarkupType.MARKDOWN, new MarkupTags("~", "~"),
                 MarkupType.HTML, new MarkupTags("<s>", "</s>"),
-                MarkupType.TEX, new MarkupTags("\\textst{", "}")
+                MarkupType.TEX, new MarkupTags("\\textst{", "}"),
+                MarkupType.BBCODE, new MarkupTags("[s]", "[/s]")
         ), elements);
     }
 }

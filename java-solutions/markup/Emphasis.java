@@ -8,7 +8,8 @@ public class Emphasis extends AbstractElement implements SpanElement {
         super(Map.of(
                 MarkupType.MARKDOWN, new MarkupTags("*", "*"),
                 MarkupType.HTML, new MarkupTags("<em>", "</em>"),
-                MarkupType.TEX, new MarkupTags("\\emph{", "}")
+                MarkupType.TEX, new MarkupTags("\\emph{", "}"),
+                MarkupType.BBCODE, new MarkupTags("[i]", "[/i]")
         ), elements);
     }
 }

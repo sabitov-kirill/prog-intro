@@ -37,4 +37,9 @@ public abstract class AbstractElement implements Element {
     public void toTex(StringBuilder sb) {
         toMarkup(sb, MarkupType.TEX);
     }
+
+    @Override
+    public void toBBCode(StringBuilder sb) {
+        toMarkup(sb, MarkupType.BBCODE);
+    }
 }
