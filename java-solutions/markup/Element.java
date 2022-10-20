@@ -1,7 +1,5 @@
 package markup;
 
-import java.util.function.BiConsumer;
-
 /**
  * General page markup element
  */

@@ -3,15 +3,13 @@ package markup;
 import java.util.function.BiConsumer;
 
 public enum MarkupType {
-    MARKDOWN("md", Element::toMarkdown),
-    HTML("html", Element::toHtml),
-    TEX("tex", Element::toTex);
+    MARKDOWN(Element::toMarkdown),
+    HTML(Element::toHtml),
+    TEX(Element::toTex);
 
-    public final String name;
     public final BiConsumer<Element, StringBuilder> elementToMarkup;
 
-    MarkupType(String name, BiConsumer<Element, StringBuilder> elementToMarkup) {
-        this.name = name;
+    MarkupType(BiConsumer<Element, StringBuilder> elementToMarkup) {
         this.elementToMarkup = elementToMarkup;
     }
 }

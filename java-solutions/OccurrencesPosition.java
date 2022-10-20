@@ -5,11 +5,11 @@ public class OccurrencesPosition {
     private final List<String> positions;
 
     public OccurrencesPosition(int firstVerticalPos, int firstHorizontalPos) {
-        positions = new ArrayList<>(List.of(String.valueOf(firstVerticalPos) + ":" + firstHorizontalPos));
+        positions = new ArrayList<>(List.of(firstVerticalPos + ":" + firstHorizontalPos));
     }
 
     public void addPos(int verticalPos, int horizontalPos) {
-        positions.add(String.valueOf(verticalPos) + ":" + horizontalPos);
+        positions.add(verticalPos + ":" + horizontalPos);
     }
 
     public int getCount() {

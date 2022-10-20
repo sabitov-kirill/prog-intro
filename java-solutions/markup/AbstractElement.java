@@ -4,8 +4,8 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class AbstractElement implements Element {
-    protected List<? extends Element> elements;
-    protected Map<MarkupType, MarkupTags> markupTags;
+    protected final List<? extends Element> elements;
+    protected final Map<MarkupType, MarkupTags> markupTags;
 
     protected AbstractElement(Map<MarkupType, MarkupTags> markupTags, List<? extends Element> elements) {
         this.elements = List.copyOf(elements);
