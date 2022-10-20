@@ -1,19 +1,14 @@
 package markup;
 
 import java.util.List;
+import java.util.Map;
 
-public class Emphasis extends Paragraph {
-    public Emphasis(List<Element> elements) {
-        super(elements);
-    }
-
-    @Override
-    protected void beginMarkup(StringBuilder sb) {
-        sb.append("*");
-    }
-
-    @Override
-    protected void endMarkup(StringBuilder sb) {
-        sb.append("*");
+public class Emphasis extends AbstractElement implements SpanElement {
+    public Emphasis(List<SpanElement> elements) {
+        super(Map.of(
+                MarkupType.MARKDOWN, new MarkupTags("*", "*"),
+                MarkupType.HTML, new MarkupTags("<em>", "</em>"),
+                MarkupType.TEX, new MarkupTags("\\emph{", "}")
+        ), elements);
     }
 }

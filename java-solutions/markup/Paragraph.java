@@ -1,24 +1,15 @@
 package markup;
 
+
 import java.util.List;
+import java.util.Map;
 
-public class Paragraph implements Element {
-    protected final List<Element> elements;
-
-    public Paragraph(List<Element> elements) {
-        this.elements = List.copyOf(elements);
-    }
-
-    protected void beginMarkup(StringBuilder sb) {}
-
-    protected void endMarkup(StringBuilder sb) {}
-
-    @Override
-    public void toMarkdown(StringBuilder sb) {
-        beginMarkup(sb);
-        for (Element element : elements) {
-            element.toMarkdown(sb);
-        }
-        endMarkup(sb);
+public class Paragraph extends AbstractElement implements BlockElement {
+    public Paragraph(List<SpanElement> elements) {
+        super(Map.of(
+                MarkupType.MARKDOWN, new MarkupTags("", ""),
+                MarkupType.HTML, new MarkupTags("", ""),
+                MarkupType.TEX, new MarkupTags("", "")
+        ), elements);
     }
 }

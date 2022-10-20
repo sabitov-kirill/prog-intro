@@ -71,7 +71,7 @@ public class WsppCountPosition extends WordStat {
     protected void performWrite(BufferedWriter writer) throws IOException {
         List<Entry<String, OccurrencesPosition>> positions = new ArrayList<>(occurrences.entrySet());
 
-        Collections.sort(positions, Comparator.comparingInt(a -> a.getValue().getCount()));
+        positions.sort(Comparator.comparingInt(a -> a.getValue().getCount()));
 
         for (Entry<String, OccurrencesPosition> occurrence : positions) {
             writer.write(occurrence.getValue().toString(occurrence.getKey()));
