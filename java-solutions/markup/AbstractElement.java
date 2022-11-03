@@ -5,15 +5,23 @@ import java.util.Map;
 
 public abstract class AbstractElement implements Element {
     protected final List<? extends Element> elements;
-    protected final Map<MarkupType, MarkupTags> markupTags;
 
-    protected AbstractElement(Map<MarkupType, MarkupTags> markupTags, List<? extends Element> elements) {
+    protected AbstractElement(List<? extends Element> elements) {
         this.elements = List.copyOf(elements);
-        this.markupTags = markupTags;
     }
 
+    protected AbstractElement(Element... elements) {
+        this.elements = List.of(elements);
+    }
+
+    protected AbstractElement(String text) {
+        this.elements = List.of(new Text(text));
+    }
+
+    protected abstract MarkupTags getTags(MarkupType markupType);
+
     protected void toMarkup(StringBuilder sb, MarkupType markupType) {
-        MarkupTags tags = markupTags.get(markupType);
+        MarkupTags tags = getTags(markupType);
         if (tags == null) {
             return;
         }
