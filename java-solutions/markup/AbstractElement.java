@@ -1,7 +1,6 @@
 package markup;
 
 import java.util.List;
-import java.util.Map;
 
 public abstract class AbstractElement implements Element {
     protected final List<? extends Element> elements;

@@ -6,8 +6,8 @@ import java.util.function.IntFunction;
 
 public class Header extends AbstractElement implements BlockElement {
     private static final Map<MarkupType, IntFunction<MarkupTags>> markupTags = Map.of(
-            MarkupType.MARKDOWN, (level) -> new MarkupTags("#".repeat(level) + " ", ""),
-            MarkupType.HTML, (level) -> new MarkupTags("<h" + level +">", "</h" + level + ">")
+            MarkupType.MARKDOWN, (level) -> new MarkupTags("#".repeat(level) + " ", "\n"),
+            MarkupType.HTML, (level) -> new MarkupTags("<h" + level +">", "</h" + level + ">\n")
     );
     private final int level;
 

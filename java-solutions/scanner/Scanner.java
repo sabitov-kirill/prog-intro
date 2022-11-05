@@ -1,11 +1,15 @@
 package scanner;
 
 import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.InputMismatchException;
 
 public class Scanner implements Closeable {
-    public static final String DEFAULT_ENCODING = "utf8";
+    // Default charset for reading files.
+    public static final Charset DEFAULT_CHARSET = StandardCharsets.UTF_8;
+
     // Flag, showing whether scanner is opened and ready to use
     private boolean isOpened;
     // Flag, showing whether source reader is opened and its stream end is not reached
@@ -35,18 +39,30 @@ public class Scanner implements Closeable {
 
     /**
      * Scanner.Scanner constructor by file name.
+     *
+     * @param text string, to read from.
+     */
+    public Scanner(String text) {
+        source = new StringReader(text);
+        isSourceOpened = true;
+        isOpened = true;
+    }
+
+    /**
+     * Scanner.Scanner constructor by file name.
      * 
      * @param inFileName name of input file, to create reader from.
+     * @param charset charset to use, while reading file.
      * @throws FileNotFoundException
      *          thrown in case input file is not found.
      * @throws UnsupportedEncodingException
      *          thrown in case of "utf8" encoding is not supported.
      */
-    public Scanner(String inFileName)
+    public Scanner(String inFileName, Charset charset)
             throws FileNotFoundException, UnsupportedEncodingException {
         source = new InputStreamReader(
                 new FileInputStream(inFileName),
-                DEFAULT_ENCODING
+                charset
         );
         isSourceOpened = true;
         isOpened = true;
