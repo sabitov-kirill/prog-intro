@@ -1,6 +1,7 @@
 package md2html;
 
 import markup.Element;
+import markup.parser.MarkdownDocumentParser;
 
 import java.io.*;
 import java.nio.file.*;

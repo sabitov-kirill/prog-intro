@@ -1,8 +1,7 @@
-package md2html;
+package markup.parser;
 
 import markup.*;
 
-import javax.print.Doc;
 import java.util.*;
 
 public class MarkdownDocumentParser implements Parser {

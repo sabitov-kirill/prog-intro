@@ -1,4 +1,4 @@
-package md2html;
+package markup.parser;
 
 import markup.SpanElement;
 
