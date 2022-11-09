@@ -3,45 +3,46 @@ package md2html;
 import markup.*;
 
 import java.util.*;
-import java.util.function.Consumer;
 
-public class MarkdownParser implements Parser {
+public class MarkdownBlockParser implements Parser {
     private static final Set<String> HTML_ESCAPING_CHARACTERS = Set.of("<", ">", "&");
     private static final Set<String> MD_TAGS = Set.of("_", "*", "`", "__", "**", "--");
-
-    private final List<BlockElement> blocks = new ArrayList<>();
+    
     private final boolean useHtmlEscaping;
-    private List<SpanElement> currentBlockChildren;
-    private Stack<OpenedTag> currentBlockOpenedTags;
+    private final List<SpanElement> currentBlockChildren = new ArrayList<>();
+    private final Stack<OpenedTag> currentBlockOpenedTags = new Stack<>();
 
-    public MarkdownParser(boolean useHtmlEscaping) {
+    public MarkdownBlockParser(boolean useHtmlEscaping) {
         this.useHtmlEscaping = useHtmlEscaping;
     }
 
     @Override
-    public void parse(String[] markdown) {
-        StringBuilder sb = new StringBuilder();
+    public BlockElement parse(String text) {
+        String blockPrefix = getBlockPrefix(text);
+        int startPosition = blockPrefix.length();
+        processBlockText(text, startPosition);
 
-        for (String line : markdown) {
-            if (!line.isBlank()) {
-                sb.append(line);
-            } else {
-                parseBlock(sb.toString());
-                sb.setLength(0);
-            }
+        // Add text to enclosed element
+        addTextToTop(currentBlockOpenedTags.peek(), text, text.length());
+
+        // Add all enclosed elements to text
+        while (!currentBlockOpenedTags.isEmpty()) {
+            OpenedTag top = currentBlockOpenedTags.pop();
+
+            Deque<SpanElement> topElementChildren = top.getChildren();
+            topElementChildren.addFirst(new Text(top.getTag()));
+            addElementsToTop(topElementChildren);
         }
+
+        return createBlockElement(blockPrefix, currentBlockChildren);
     }
 
-    public void parseBlock(String block) {
-        String blockPrefix = getBlockPrefix(block);
-        int pos = blockPrefix.length();
-
-        currentBlockChildren = new ArrayList<>();
-        currentBlockOpenedTags = new Stack<>();
-        currentBlockOpenedTags.push(new OpenedTag("", pos));
+    private void processBlockText(String text, int startPosition) {
+        // Start first text element
+        currentBlockOpenedTags.push(new OpenedTag("", startPosition));
 
         boolean isMarkdownSymbolEscaped = false;
-        for (; pos < block.length(); pos++) {
+        for (int pos = startPosition; pos < text.length(); pos++) {
             // Skip escaped symbols
             if (isMarkdownSymbolEscaped) {
                 isMarkdownSymbolEscaped = false;
@@ -49,8 +50,8 @@ public class MarkdownParser implements Parser {
             }
 
             // Current char and char paired with next one substrings
-            String single = String.valueOf(block.charAt(pos));
-            String pair = block.substring(pos, pos < block.length() - 1 ? pos + 2 : pos);
+            String single = String.valueOf(text.charAt(pos));
+            String pair = text.substring(pos, pos < text.length() - 1 ? pos + 2 : pos);
 
             // Single char and pair statuses
             boolean pairIsTag = MD_TAGS.contains(pair);
@@ -63,7 +64,7 @@ public class MarkdownParser implements Parser {
             }
 
             // Close last text element, and add it to previous element
-            addTextToTop(currentBlockOpenedTags.pop(), block, pos);
+            addTextToTop(currentBlockOpenedTags.pop(), text, pos);
 
             // Skip one extra char for paired tag
             if (pairIsTag) {
@@ -75,7 +76,7 @@ public class MarkdownParser implements Parser {
                 addElementToTop(createHtmlEscaped(single));
             } else if (!currentBlockOpenedTags.isEmpty() &&
                     ((currentBlockOpenedTags.peek().tagEquals(single) && singleIsTag) ||
-                     (currentBlockOpenedTags.peek().tagEquals(pair))  && pairIsTag)) {
+                            (currentBlockOpenedTags.peek().tagEquals(pair))  && pairIsTag)) {
                 // Add closed markdown element to previous element on stack
                 OpenedTag top = currentBlockOpenedTags.pop();
                 addElementToTop(createSpanElement(top.getTag(), new ArrayList<>(top.getChildren())));
@@ -87,24 +88,9 @@ public class MarkdownParser implements Parser {
                 currentBlockOpenedTags.push(newOpenedTag);
             }
 
-            // Start new text block
+            // Start new text text
             currentBlockOpenedTags.push(new OpenedTag("", pos + 1));
         }
-
-        // Add text to enclosed element
-        addTextToTop(currentBlockOpenedTags.peek(), block, pos);
-
-        // Add all elements to block
-        while (!currentBlockOpenedTags.isEmpty()) {
-            OpenedTag top = currentBlockOpenedTags.pop();
-
-            Deque<SpanElement> topElementChildren = top.getChildren();
-            topElementChildren.addFirst(new Text(top.getTag()));
-            addElementsToTop(topElementChildren);
-        }
-
-        // Add parsed block
-        blocks.add(createBlockElement(blockPrefix, currentBlockChildren));
     }
 
     private void addTextToTop(OpenedTag textTag, String block, int pos) {
@@ -126,31 +112,6 @@ public class MarkdownParser implements Parser {
         } else {
             currentBlockChildren.addAll(elements);
         }
-    }
-
-    private void toMarkup(Consumer<BlockElement> markupCreator) {
-        for (BlockElement block : blocks) {
-            markupCreator.accept(block);
-        }
-    }
-
-    @Override
-    public void toMarkdown(StringBuilder sb) {
-        toMarkup((block) -> block.toMarkdown(sb));
-    }
-
-    public void toHtml(StringBuilder sb) {
-        toMarkup((block) -> block.toHtml(sb));
-    }
-
-    @Override
-    public void toTex(StringBuilder sb) {
-        toMarkup((block) -> block.toTex(sb));
-    }
-
-    @Override
-    public void toBBCode(StringBuilder sb) {
-        toMarkup((block) -> block.toBBCode(sb));
     }
 
     private static SpanElement createHtmlEscaped(String symbol) {

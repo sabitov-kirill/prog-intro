@@ -21,6 +21,7 @@ public abstract class AbstractElement implements Element {
 
     protected void toMarkup(StringBuilder sb, MarkupType markupType) {
         MarkupTags tags = getTags(markupType);
+        assert tags != null : markupType + " markdown type not supported for " + this.getClass().getSimpleName();
         if (tags == null) {
             return;
         }

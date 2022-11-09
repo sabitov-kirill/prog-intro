@@ -17,10 +17,6 @@ public class ListItem extends AbstractElement implements ListItemElement {
         super(elements);
     }
 
-    public ListItem(String text) {
-        super(text);
-    }
-
     @Override
     protected MarkupTags getTags(MarkupType markupType) {
         return markupTags.get(markupType);

@@ -1,8 +1,9 @@
 package md2html;
 
-import scanner.Scanner;
+import markup.Element;
 
 import java.io.*;
+import java.nio.file.*;
 import java.nio.charset.StandardCharsets;
 
 public class Md2Html {
@@ -12,36 +13,20 @@ public class Md2Html {
             return;
         }
 
-        MarkdownParser parser = new MarkdownParser(true);
-        StringBuilder sb = new StringBuilder();
+        StringBuilder output = new StringBuilder();
 
-        try (Scanner in = new Scanner(args[0], Scanner.DEFAULT_CHARSET)) {
-            while (in.hasNextLine()) {
-                String line = in.nextLine();
-
-                if (!line.isBlank()) {
-                    sb.append(line).append(System.lineSeparator());
-                } else if (!sb.isEmpty()) {
-                    parser.parseBlock(sb.deleteCharAt(sb.length() - 1).toString());
-                    sb.setLength(0);
-                }
-            }
-
-            if (!sb.isEmpty()) {
-                parser.parseBlock(sb.deleteCharAt(sb.length() - 1).toString());
-            }
-        } catch (FileNotFoundException e) {
-            System.err.println("Input file not found.");
-            return;
+        try {
+            String text = Files.readString(Paths.get(args[0]), StandardCharsets.UTF_8);
+            MarkdownDocumentParser parser = new MarkdownDocumentParser(true);
+            Element el = parser.parse(text);
+            el.toHtml(output);
         } catch (IOException e) {
             System.err.println("Error during reading input file \"" + args[0] + "\": " + e.getMessage());
             return;
         }
 
-        sb.setLength(0);
         try (FileWriter out = new FileWriter(args[1], StandardCharsets.UTF_8)) {
-            parser.toHtml(sb);
-            out.write(sb.toString());
+            out.write(output.toString());
         } catch (IOException e) {
             System.err.println("Error during writing to output file \"" + args[1] + "\": " + e.getMessage());
         }

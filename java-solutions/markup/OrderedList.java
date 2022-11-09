@@ -16,10 +16,6 @@ public class OrderedList extends AbstractElement implements BlockElement {
         super(elements);
     }
 
-    public OrderedList(String text) {
-        super(text);
-    }
-
     @Override
     protected MarkupTags getTags(MarkupType markupType) {
         return markupTags.get(markupType);

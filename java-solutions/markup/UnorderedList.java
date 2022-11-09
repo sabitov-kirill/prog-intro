@@ -17,10 +17,6 @@ public class UnorderedList extends AbstractElement implements BlockElement {
         super(elements);
     }
 
-    public UnorderedList(String text) {
-        super(text);
-    }
-
     @Override
     protected MarkupTags getTags(MarkupType markupType) {
         return markupTags.get(markupType);
