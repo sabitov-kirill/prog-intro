@@ -6,7 +6,7 @@ import java.util.*;
 
 public class MarkdownBlockParser implements Parser {
     private static final Set<String> HTML_ESCAPING_CHARACTERS = Set.of("<", ">", "&");
-    private static final Set<String> MD_TAGS = Set.of("_", "*", "`", "__", "**", "--");
+    private static final Set<String> MD_TAGS = Set.of("_", "*", "`", "__", "**", "--", "++");
     
     private final boolean useHtmlEscaping;
     private final List<SpanElement> currentBlockChildren = new ArrayList<>();
@@ -129,6 +129,7 @@ public class MarkdownBlockParser implements Parser {
             case "__", "**" -> new Strong(children);
             case "--"       -> new Strikeout(children);
             case "`"        -> new Code(children);
+            case "++"       -> new Underline(children);
             default -> throw new AssertionError("Unknown Span element tag.");
         };
     }
