@@ -27,7 +27,7 @@ public class MarkdownDocumentParser implements Parser {
         int blockStart = -1;
         boolean blockEmpty = true;
 
-        text = text + "\n\n";
+        text = text + "\n\n"; // :NOTE: много памяти
 
         for (int i = 0; i < text.length() - 1; i++) {
             if (text.charAt(i) != '\n') {

@@ -74,9 +74,7 @@ public class MarkdownBlockParser implements Parser {
             if (singleIsEscaped) {
                 // Add escaped char
                 addElementToTop(createHtmlEscaped(single));
-            } else if (!currentBlockOpenedTags.isEmpty() &&
-                    ((currentBlockOpenedTags.peek().tagEquals(single) && singleIsTag) ||
-                            (currentBlockOpenedTags.peek().tagEquals(pair))  && pairIsTag)) {
+            } else if (!currentBlockOpenedTags.isEmpty() && checkTagMatching(single, pair, pairIsTag, singleIsTag)) {
                 // Add closed markdown element to previous element on stack
                 OpenedTag top = currentBlockOpenedTags.pop();
                 addElementToTop(createSpanElement(top.getTag(), new ArrayList<>(top.getChildren())));
@@ -91,6 +89,12 @@ public class MarkdownBlockParser implements Parser {
             // Start new text text
             currentBlockOpenedTags.push(new OpenedTag("", pos + 1));
         }
+    }
+
+    private boolean checkTagMatching(String single, String pair, boolean pairIsTag, boolean singleIsTag) {
+        OpenedTag lastTag = currentBlockOpenedTags.peek();
+        return (lastTag.tagEquals(single) && singleIsTag) ||
+            (lastTag.tagEquals(pair) && pairIsTag);
     }
 
     private void addTextToTop(OpenedTag textTag, String block, int pos) {
