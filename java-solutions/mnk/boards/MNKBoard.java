@@ -1,11 +1,83 @@
 package mnk.boards;
 
 import mnk.*;
+import mnk.exceptions.CellNotEmptyMoveException;
+import mnk.exceptions.InvalidTurnMoveException;
+import mnk.exceptions.OutOfBoundsMoveException;
 
 import java.util.Arrays;
 import java.util.Map;
 
 public class MNKBoard implements Board {
+    private class BoardPosition implements Position {
+        @Override
+        public Cell getCell(int r, int c) {
+            return cells[r][c];
+        }
+
+        private boolean isRowOutOfBoundMove(Move move) { return move.row() < 0 || move.row() >= height; }
+        private boolean isColumnOutOfBoundMove(Move move) { return move.column() < 0 || move.column() >= width; }
+        private boolean isCellNotEmptyMove(Move move) { return getCell(move.row(), move.column()) != Cell.EMPTY; }
+        private boolean isInvalidTurnMove(Move move) { return getTurnCell() != move.value(); }
+
+        @Override
+        public boolean isMoveValid(Move move) {
+            return !isRowOutOfBoundMove(move)
+                    && !isColumnOutOfBoundMove(move)
+                    && !isCellNotEmptyMove(move)
+                    && !isInvalidTurnMove(move);
+        }
+
+        @Override
+        public void validateMove(final Move move)
+                throws OutOfBoundsMoveException, CellNotEmptyMoveException, InvalidTurnMoveException {
+            if (isRowOutOfBoundMove(move)) {
+                throw new OutOfBoundsMoveException(
+                        true, move.row(), height
+                );
+            }
+
+            if (isColumnOutOfBoundMove(move)) {
+                throw new OutOfBoundsMoveException(
+                        false, move.column(), width
+                );
+            }
+
+            if (isCellNotEmptyMove(move)) {
+                throw new CellNotEmptyMoveException(move.row(), move.column());
+            }
+
+            if (isInvalidTurnMove(move)) {
+                throw new InvalidTurnMoveException(move.value(), getTurnCell());
+            }
+        }
+
+        @Override
+        public String toString() {
+            final StringBuilder sb = new StringBuilder("   ");
+            for (int c = 0; c < width; c++) {
+                sb.append(String.format("%02d ", c));
+            }
+            sb.append("\n  ╭").append("──┬".repeat(width - 1)).append("──╮");
+
+            for (int r = 0; r < height; r++) {
+                sb.append("\n");
+                sb.append(String.format("%02d", r)).append('│');
+                for (int c = 0; c < width; c++) {
+                    sb.append(SYMBOLS.get(cells[r][c])).append(" │");
+                }
+
+                if (r != height - 1) {
+                    sb.append("\n  ├").append("──┼".repeat(width - 1)).append("──┤");
+                } else {
+                    sb.append("\n  ╰").append("──┴".repeat(width - 1)).append("──╯");
+                }
+            }
+            return sb.toString();
+        }
+    }
+
+    private static final int ADDITIONAL_MOVE_THR = 4;
     private static final Map<Cell, Character> SYMBOLS = Map.of(
             Cell.X, 'X',
             Cell.O, 'O',
@@ -20,7 +92,7 @@ public class MNKBoard implements Board {
     private int cellsCount;
     private int filledCellsCount;
     private Cell turn = Cell.X;
-    private final BoardPossition position;
+    private final BoardPosition position = new BoardPosition();
 
 
     public MNKBoard(int width, int height, int inRow) {
@@ -30,8 +102,6 @@ public class MNKBoard implements Board {
         this.cellsCount = width * height;
 
         initialize(width, height);
-
-        this.position = new BoardPossition(cells, width, height, this::getTurnCell);
     }
 
     void initialize(int width, int height) {
@@ -92,6 +162,8 @@ public class MNKBoard implements Board {
 
             if (directionPoints >= inRow) {
                 return Result.WIN;
+            } else if (directionPoints >= ADDITIONAL_MOVE_THR) {
+                return Result.ADDITIONAL_MOVE;
             }
         }
 
@@ -121,25 +193,6 @@ public class MNKBoard implements Board {
 
     @Override
     public String toString() {
-        final StringBuilder sb = new StringBuilder("   ");
-        for (int c = 0; c < width; c++) {
-            sb.append(String.format("%02d ", c));
-        }
-        sb.append("\n  ╭").append("──┬".repeat(width - 1)).append("──╮");
-
-        for (int r = 0; r < height; r++) {
-            sb.append("\n");
-            sb.append(String.format("%02d", r)).append('│');
-            for (int c = 0; c < width; c++) {
-                sb.append(SYMBOLS.get(cells[r][c])).append(" │");
-            }
-
-            if (r != height - 1) {
-                sb.append("\n  ├").append("──┼".repeat(width - 1)).append("──┤");
-            } else {
-                sb.append("\n  ╰").append("──┴".repeat(width - 1)).append("──╯");
-            }
-        }
-        return sb.toString();
+        return position.toString();
     }
 }

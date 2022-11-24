@@ -1,8 +1,14 @@
 package mnk.exceptions;
 
+import mnk.Cell;
+
 public class InvalidTurnMoveException extends InvalidMoveException {
-    public InvalidTurnMoveException(String message) {
-        super(message);
+    public InvalidTurnMoveException(Cell currentCell, Cell turnCell) {
+        super(String.format(
+                "Made turn %s, while should be %s",
+                currentCell,
+                turnCell
+        ));
     }
 
     public InvalidTurnMoveException(String message, Throwable cause) {

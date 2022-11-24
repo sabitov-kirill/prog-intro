@@ -27,6 +27,10 @@ public class ArgumentsParser {
                 currentKey = "";
             }
         }
+
+        if (!currentKey.isEmpty()) {
+            parsedArguments.put(currentKey, "");
+        }
     }
 
     public String get(String key) {
@@ -48,6 +52,11 @@ public class ArgumentsParser {
         }
 
         return intValue;
+    }
+
+    public boolean getOrDefault(String key, boolean defaultValue) {
+        String value = get(key);
+        return value != null || defaultValue;
     }
 
     public boolean isPresent(String key) {

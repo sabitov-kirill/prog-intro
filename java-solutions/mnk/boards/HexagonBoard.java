@@ -1,10 +1,7 @@
 package mnk.boards;
 
-import mnk.BoardPossition;
 import mnk.Cell;
 import mnk.Direction;
-
-import java.util.Arrays;
 
 public class HexagonBoard extends MNKBoard {
     public HexagonBoard(int size, int inRow) {
@@ -20,7 +17,7 @@ public class HexagonBoard extends MNKBoard {
         directionPairs = new Direction[][]{
                 { new Direction(1,  1),  new Direction(-1, -1) },
                 { new Direction(1, -1),  new Direction(-1,  1) },
-                { new Direction(1,  0),  new Direction(-1,  0) },
+                { new Direction(2,  0),  new Direction(-2,  0) },
         };
 
         cells = new Cell[height][width];

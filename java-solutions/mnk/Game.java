@@ -31,16 +31,20 @@ public class Game {
 
     private int move(final Board board, final Player player, final int no) {
         Move playerMove;
-        try {
-            playerMove = player.createMove(board.getPosition(), board.getTurnCell());
-        } catch (Throwable e) {
-            log("Player " + no + " thrown exception and lose: " + e.getMessage());
-            return 3 - no;
-        }
+        Result result;
+        do {
+            try {
+                playerMove = player.createMove(board.getPosition(), board.getTurnCell());
+            } catch (Throwable e) {
+                log("Player " + no + " thrown exception and lose: " + e.getMessage());
+                return 3 - no;
+            }
 
-        final Result result = board.makeMove(playerMove);
+            result = board.makeMove(playerMove);
+        } while (result == Result.ADDITIONAL_MOVE);
+
         log("Player " + no + " move: " + playerMove);
-        log("Position:\n" + board);
+        log("Position:\n" + board + "\n");
         if (result == Result.WIN) {
             log("Player " + no + " won");
             return no;
