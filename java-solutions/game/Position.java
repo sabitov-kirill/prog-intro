@@ -1,8 +1,8 @@
-package mnk;
+package game;
 
-import mnk.exceptions.CellNotEmptyMoveException;
-import mnk.exceptions.InvalidTurnMoveException;
-import mnk.exceptions.OutOfBoundsMoveException;
+import game.exceptions.CellNotEmptyMoveException;
+import game.exceptions.InvalidTurnMoveException;
+import game.exceptions.OutOfBoundsMoveException;
 
 /**
  * @author Georgiy Korneev (kgeorgiy@kgeorgiy.info)

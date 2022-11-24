@@ -1,4 +1,4 @@
-package mnk.exceptions;
+package game.exceptions;
 
 public class CellNotEmptyMoveException extends InvalidMoveException {
     public CellNotEmptyMoveException(int r, int c) {

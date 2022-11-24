@@ -1,13 +1,11 @@
-package mnk.players;
+package game.players;
 
-import mnk.Cell;
-import mnk.Move;
-import mnk.Position;
-import mnk.exceptions.InvalidMoveException;
+import game.Cell;
+import game.Move;
+import game.Position;
+import game.exceptions.InvalidMoveException;
 
 import java.io.PrintStream;
-import java.util.InputMismatchException;
-import java.util.NoSuchElementException;
 import java.util.Scanner;
 
 /**

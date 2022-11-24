@@ -1,4 +1,4 @@
-package mnk;
+package game;
 
 /**
  * @author Georgiy Korneev (kgeorgiy@kgeorgiy.info)

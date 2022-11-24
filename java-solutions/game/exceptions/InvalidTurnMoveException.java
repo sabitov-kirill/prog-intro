@@ -1,6 +1,6 @@
-package mnk.exceptions;
+package game.exceptions;
 
-import mnk.Cell;
+import game.Cell;
 
 public class InvalidTurnMoveException extends InvalidMoveException {
     public InvalidTurnMoveException(Cell currentCell, Cell turnCell) {

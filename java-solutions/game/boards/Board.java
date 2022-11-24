@@ -1,9 +1,9 @@
-package mnk.boards;
+package game.boards;
 
-import mnk.Cell;
-import mnk.Move;
-import mnk.Position;
-import mnk.Result;
+import game.Cell;
+import game.Move;
+import game.Position;
+import game.Result;
 
 /**
  * @author Georgiy Korneev (kgeorgiy@kgeorgiy.info)

@@ -1,8 +1,8 @@
-package mnk.players;
+package game.players;
 
-import mnk.Cell;
-import mnk.Move;
-import mnk.Position;
+import game.Cell;
+import game.Move;
+import game.Position;
 
 public class ExceptionPlayer implements Player {
     @Override

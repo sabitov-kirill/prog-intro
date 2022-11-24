@@ -1,9 +1,7 @@
-package mnk;
+package game;
 
-import mnk.boards.*;
-import mnk.players.*;
-
-import java.util.Arrays;
+import game.boards.*;
+import game.players.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -48,6 +46,6 @@ public class Main {
             }
         };
 
-        System.out.println(winsCount > 0 ? "First player wins round" : "Second player wins won");
+        System.out.println(winsCount > 0 ? "First player wins" : "Second player wins");
     }
 }

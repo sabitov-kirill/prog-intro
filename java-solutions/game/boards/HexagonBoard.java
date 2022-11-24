@@ -1,7 +1,7 @@
-package mnk.boards;
+package game.boards;
 
-import mnk.Cell;
-import mnk.Direction;
+import game.Cell;
+import game.Direction;
 
 public class HexagonBoard extends MNKBoard {
     public HexagonBoard(int size, int inRow) {

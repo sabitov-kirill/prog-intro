@@ -1,9 +1,9 @@
-package mnk.players;
+package game.players;
 
-import mnk.Cell;
-import mnk.Move;
-import mnk.Position;
-import mnk.boards.MNKBoard;
+import game.Cell;
+import game.Move;
+import game.Position;
+import game.boards.MNKBoard;
 
 public class CheatingPlayer implements Player {
     private final int boundX, boundY;

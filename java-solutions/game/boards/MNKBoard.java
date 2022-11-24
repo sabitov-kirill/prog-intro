@@ -1,9 +1,9 @@
-package mnk.boards;
+package game.boards;
 
-import mnk.*;
-import mnk.exceptions.CellNotEmptyMoveException;
-import mnk.exceptions.InvalidTurnMoveException;
-import mnk.exceptions.OutOfBoundsMoveException;
+import game.*;
+import game.exceptions.CellNotEmptyMoveException;
+import game.exceptions.InvalidTurnMoveException;
+import game.exceptions.OutOfBoundsMoveException;
 
 import java.util.Arrays;
 import java.util.Map;
@@ -162,7 +162,7 @@ public class MNKBoard implements Board {
 
             if (directionPoints >= inRow) {
                 return Result.WIN;
-            } else if (directionPoints >= ADDITIONAL_MOVE_THR) {
+            } else if (directionPoints >= ADDITIONAL_MOVE_THR && filledCellsCount < cellsCount) {
                 return Result.ADDITIONAL_MOVE;
             }
         }

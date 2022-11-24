@@ -1,4 +1,4 @@
-package mnk.exceptions;
+package game.exceptions;
 
 public class InvalidMoveException extends Exception {
     public InvalidMoveException(String message) {

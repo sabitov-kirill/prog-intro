@@ -1,4 +1,4 @@
-package mnk.exceptions;
+package game.exceptions;
 
 public class OutOfBoundsMoveException extends InvalidMoveException {
     public OutOfBoundsMoveException(boolean isRow, int currentValue, int allowedRange) {

@@ -1,7 +1,7 @@
-package mnk;
+package game;
 
-import mnk.boards.Board;
-import mnk.players.Player;
+import game.boards.Board;
+import game.players.Player;
 
 /**
  * @author Georgiy Korneev (kgeorgiy@kgeorgiy.info)
