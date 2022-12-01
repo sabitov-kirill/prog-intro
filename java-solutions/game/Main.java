@@ -38,7 +38,7 @@ public class Main {
                     winsCount += 1;
                 }
                 case 2 -> {
-                    System.out.println("Second player wins won");
+                    System.out.println("Second player wins round");
                     winsCount -= 1;
                 }
                 case 0 -> System.out.println("Round draw");
