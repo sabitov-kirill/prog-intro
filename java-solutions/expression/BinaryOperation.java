@@ -1,3 +1,4 @@
+
 package expression;
 
 public abstract class BinaryOperation implements CommonExpression {
