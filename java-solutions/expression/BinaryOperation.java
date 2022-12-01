@@ -4,12 +4,16 @@ package expression;
 public abstract class BinaryOperation implements CommonExpression {
     private final CommonExpression left, right;
     private final boolean associative;
+    private final boolean distributtivity;
+    private final boolean distributive;
     private final int priority;
 
-    public BinaryOperation(CommonExpression left, CommonExpression right, boolean associative, int priority) {
+    public BinaryOperation(CommonExpression left, CommonExpression right, boolean associative, boolean distributtivity, boolean distributive, int priority) {
         this.left = left;
         this.right = right;
         this.associative = associative;
+        this.distributtivity = distributtivity;
+        this.distributive = distributive;
         this.priority = priority;
     }
 
@@ -46,7 +50,7 @@ public abstract class BinaryOperation implements CommonExpression {
         boolean leftBrackets = left instanceof BinaryOperation op && priority > op.priority;
         boolean rightBrackets = right instanceof BinaryOperation op
                 && (priority > op.priority || (!associative && priority == op.priority)
-                || (right instanceof Divide && this instanceof Multiply));
+                || (this.distributtivity && !op.distributive));
 
         String leftString = leftBrackets ? "(" + left.toMiniString() + ")" : left.toMiniString();
         String rightString = rightBrackets ? "(" + right.toMiniString() + ")" : right.toMiniString();

@@ -2,7 +2,7 @@ package expression;
 
 public class Divide extends BinaryOperation {
     public Divide(CommonExpression left, CommonExpression right) {
-        super(left, right, false, 2);
+        super(left, right, false, false, false, 2);
     }
 
     @Override
