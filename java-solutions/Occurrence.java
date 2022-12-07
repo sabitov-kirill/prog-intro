@@ -1,5 +1,3 @@
-package wordstat;
-
 public class Occurrence {
     public int count;
     public final String token;

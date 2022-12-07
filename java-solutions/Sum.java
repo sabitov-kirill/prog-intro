@@ -1,10 +1,8 @@
-package sum;
-
-public class SumDouble {
+public class Sum {
     public static void main(String[] args) {
         String text = String.join(" ", args) + " ";
 
-        double sum = 0;
+        int sum = 0;
         int numberStart = 0;
         boolean isPrevCharWhitespace = true;
         for (int index = 0; index < text.length(); index++) {
@@ -16,11 +14,16 @@ public class SumDouble {
                 isPrevCharWhitespace = false;
             }
             if (isChWhitespace && !isPrevCharWhitespace) {
-                sum += Double.parseDouble(text.substring(numberStart, index));
+                sum += convertToNumber(text.substring(numberStart, index));
                 isPrevCharWhitespace = true;
             }
         }
 
         System.out.println(sum);
     }
+
+    private static int convertToNumber(String stringRepresentation) {
+        return Integer.parseInt(stringRepresentation);
+    }
 }
+

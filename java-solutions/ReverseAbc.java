@@ -1,5 +1,3 @@
-package reverse;
-
 import scanner.Scanner;
 
 import java.io.IOException;

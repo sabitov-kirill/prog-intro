@@ -1,15 +1,13 @@
-package sum;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class SumOctal {
+public class SumLongOctal {
     public static void main(String[] args) {
         String text = String.join(" ", args);
         List<String> tokens = tokenize(text);
 
-        int sum = tokens.stream()
-                .mapToInt(SumOctal::parseNumber)
+        long sum = tokens.stream()
+                .mapToLong(SumLongOctal::parseNumber)
                 .sum();
 
         System.out.println(sum);
@@ -34,11 +32,11 @@ public class SumOctal {
         return tokens;
     }
 
-    private static int parseNumber(String stringRepresentation) {
+    private static long parseNumber(String stringRepresentation) {
         if (stringRepresentation.endsWith("o") || stringRepresentation.endsWith("O")) {
             String withoutSuffix = stringRepresentation.substring(0, stringRepresentation.length() - 1);
-            return Integer.parseInt(withoutSuffix, 8);
+            return Long.parseLong(withoutSuffix, 8);
         }
-        return Integer.parseInt(stringRepresentation);
+        return Long.parseLong(stringRepresentation);
     }
 }

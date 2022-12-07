@@ -1,5 +1,3 @@
-package wordstat;
-
 import scanner.Scanner;
 
 import java.io.*;

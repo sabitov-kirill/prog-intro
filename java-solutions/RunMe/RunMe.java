@@ -1,4 +1,4 @@
-package runme;
+package RunMe;
 
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
