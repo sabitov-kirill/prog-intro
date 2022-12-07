@@ -1,8 +1,8 @@
 import scanner.Scanner;
-import wordstat.WordStat;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -53,7 +53,7 @@ public class WsppCountPosition extends WordStat {
     @Override
     public void read(String inputFileName)
             throws IOException {
-        try (Scanner in = new Scanner(inputFileName)) {
+        try (Scanner in = new Scanner(inputFileName, StandardCharsets.UTF_8)) {
             while (in.hasNextLine()) {
                 String line = in.nextLine();
                 verticalPos++;
