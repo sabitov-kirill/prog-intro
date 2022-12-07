@@ -6,10 +6,10 @@ import java.util.Map;
 
 public class Paragraph extends AbstractElement implements BlockElement {
     private static final Map<MarkupType, MarkupTags> markupTags = Map.of(
-            MarkupType.MARKDOWN, new MarkupTags("", "\n"),
-            MarkupType.HTML, new MarkupTags("<p>", "</p>\n"),
-            MarkupType.TEX, new MarkupTags("", "\n"),
-            MarkupType.BBCODE, new MarkupTags("", "\n")
+            MarkupType.MARKDOWN, new MarkupTags("", ""),
+            MarkupType.HTML, new MarkupTags("<p>", "</p>"),
+            MarkupType.TEX, new MarkupTags("", ""),
+            MarkupType.BBCODE, new MarkupTags("", "")
     );
 
     public Paragraph(List<SpanElement> elements) {

@@ -23,8 +23,8 @@ public class Header extends AbstractElement implements BlockElement {
     @Override
     protected MarkupTags getTags(MarkupType markupType) {
         return switch (markupType) {
-            case MARKDOWN -> new MarkupTags("#".repeat(level) + " ", "\n");
-            case HTML -> new MarkupTags("<h" + level +">", "</h" + level + ">\n");
+            case MARKDOWN -> new MarkupTags("#".repeat(level) + " ", "");
+            case HTML -> new MarkupTags("<h" + level +">", "</h" + level + ">");
             default -> null;
         };
     }

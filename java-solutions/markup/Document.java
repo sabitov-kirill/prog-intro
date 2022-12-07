@@ -24,8 +24,8 @@ public class Document extends AbstractElement {
 
         for (int i = 0; i < elements.size(); i++) {
             markupType.elementToMarkup.accept(elements.get(i), sb);
-            if (separateBlocksWithEOL && i != elements.size() - 1) {
-                sb.append('\n');
+            if (i != elements.size() - 1) {
+                sb.append(separateBlocksWithEOL ? "\n\n" : '\n');
             }
         }
     }
