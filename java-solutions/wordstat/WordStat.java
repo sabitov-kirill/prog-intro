@@ -12,7 +12,7 @@ public abstract class WordStat {
 
     public void read(String inputFileName)
             throws IOException {
-        try (Scanner in = new Scanner(inputFileName)) {
+        try (Scanner in = new Scanner(inputFileName, StandardCharsets.UTF_8)) {
             while (in.hasNextWord()) {
                 String word = in.nextWord();
                 tokenConsume(word);
