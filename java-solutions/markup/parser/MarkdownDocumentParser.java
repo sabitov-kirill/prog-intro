@@ -1,7 +1,10 @@
 package markup.parser;
 
 import markup.*;
+import scanner.*;
+import scanner.Scanner;
 
+import java.io.IOException;
 import java.util.*;
 
 public class MarkdownDocumentParser implements Parser {
@@ -24,23 +27,28 @@ public class MarkdownDocumentParser implements Parser {
 
     private static List<String> splitToBlocksText(String text) {
         List<String> blocksText = new ArrayList<>();
-        int blockStart = -1;
-        boolean blockEmpty = true;
+        Scanner scanner = new Scanner(text);
+        StringBuilder sb = new StringBuilder();
 
-        text = text + "\n\n"; // :NOTE: много памяти
+        try {
+            while (scanner.hasNextLine()) {
+                String line = scanner.nextLine();
 
-        for (int i = 0; i < text.length() - 1; i++) {
-            if (text.charAt(i) != '\n') {
-                if (blockStart != -1) {
-                    blockEmpty = false;
-                } else {
-                    blockStart = i;
+                if (line.isBlank() && !sb.isEmpty()) {
+                    sb.setLength(sb.length() - 1);
+                    blocksText.add(sb.toString());
+                    sb.setLength(0);
+                } else if (!line.isBlank()) {
+                    sb.append(line).append('\n');
                 }
-            } else if (text.charAt(i + 1) == '\n' && !blockEmpty) {
-                blocksText.add(text.substring(blockStart, i));
-                blockStart = -1;
-                blockEmpty = true;
             }
+        } catch (IOException e) {
+            return blocksText;
+        }
+
+        if (!sb.isEmpty()) {
+            sb.setLength(sb.length() - 1);
+            blocksText.add(sb.toString());
         }
 
         return blocksText;
