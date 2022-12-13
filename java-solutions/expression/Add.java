@@ -1,8 +1,8 @@
 package expression;
 
-public class Add extends BinaryOperation {
+public class Add extends AbstractBinaryOperator {
     public Add(CommonExpression left, CommonExpression right) {
-        super(left, right, true, false, true, 1);
+        super(left, right, true, false, true, 0);
     }
 
     @Override
@@ -10,12 +10,12 @@ public class Add extends BinaryOperation {
         return "+";
     }
 
-    public int evaluateValues(int a, int b) {
+    public int evaluateImpl(int a, int b) {
         return a + b;
     }
 
     @Override
-    public double evaluateValues(double a, double b) {
+    public double evaluateImpl(double a, double b) {
         return a + b;
     }
 }

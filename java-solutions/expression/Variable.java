@@ -18,6 +18,16 @@ public class Variable implements CommonExpression {
     }
 
     @Override
+    public int evaluate(int x, int y, int z) {
+        return switch (name) {
+            case "x" -> x;
+            case "y" -> y;
+            case "z" -> z;
+            default -> 0;
+        };
+    }
+
+    @Override
     public String toString() {
         return name;
     }
@@ -36,15 +46,5 @@ public class Variable implements CommonExpression {
     public boolean equals(Object other) {
         return other instanceof Variable otherVariable
                 && otherVariable.name.equals(name);
-    }
-
-    @Override
-    public int evaluate(int x, int y, int z) {
-        return switch (name) {
-            case "x" -> x;
-            case "y" -> y;
-            case "z" -> z;
-            default -> 0;
-        };
     }
 }
