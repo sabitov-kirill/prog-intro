@@ -1,8 +1,5 @@
 package expression.parser;
 
-import expression.Subtract;
-
-import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -38,6 +35,22 @@ public class BaseParser {
             return true;
         }
         return false;
+    }
+
+    protected boolean take(final String expected) {
+        char anchorChar = ch;
+        source.setAnchor();
+
+        for (int i = 0; i < expected.length(); i++) {
+            if (!test(expected.charAt(i))) {
+                ch = anchorChar;
+                source.returnToAnchor();
+                return false;
+            } else {
+                take();
+            }
+        }
+        return true;
     }
 
     protected boolean takeWhitespace() {

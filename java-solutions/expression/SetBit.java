@@ -2,7 +2,7 @@ package expression;
 
 public class SetBit extends AbstractBinaryOperator {
     public SetBit(CommonExpression left, CommonExpression right) {
-        super(left, right, false, false, true, 5);
+        super(left, right, false, false, true, 50);
     }
 
     @Override

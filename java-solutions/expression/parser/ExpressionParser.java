@@ -1,11 +1,8 @@
 package expression.parser;
 
 import expression.*;
-import static expression.OperatorFactory.OPERATORS_BY_PRIOR;
 
-
-import java.util.List;
-import java.util.Set;
+import static expression.parser.PriorityLevel.OPERATORS_BY_PRIOR;
 
 public class ExpressionParser implements TripleParser {
     @Override
@@ -26,9 +23,9 @@ public class ExpressionParser implements TripleParser {
         }
 
         public CommonExpression parseTerm(int priority) {
-            // (1, false) -> (2, false) -> ... -> (MAX_PRIOR, true)
-            // Unary operations are considered to have the lowest priority and are always postfix
-            if (priority == MAX_PRIOR) {
+            // Unary priority levels parsed separated
+            // (1, isUnary) -> (2, isUnary) -> ... -> (MAX_PRIOR, true)
+            if (priority == MAX_PRIOR || OPERATORS_BY_PRIOR.get(priority).isUnary()) {
                 return parseUnary();
             }
 
@@ -41,9 +38,8 @@ public class ExpressionParser implements TripleParser {
                 skipWhitespace();
 
                 currentOperatorSign = "";
-                for (String opSign : OPERATORS_BY_PRIOR.get(priority)) {
-                    if (test(opSign.charAt(0))) {
-                        expect(opSign);
+                for (String opSign : OPERATORS_BY_PRIOR.get(priority).operatorsSigns()) {
+                    if (take(opSign)) {
                         currentOperatorSign = opSign;
                         break;
                     }
@@ -68,10 +64,8 @@ public class ExpressionParser implements TripleParser {
             }
 
             boolean negatedConst = false;
-            for (String opSign : OPERATORS_BY_PRIOR.get(MAX_PRIOR)) {
-                if (test(opSign.charAt(0))) {
-                    expect(opSign);
-
+            for (String opSign : OPERATORS_BY_PRIOR.get(MAX_PRIOR).operatorsSigns()) {
+                if (take(opSign)) {
                     if (opSign.equals("-") && between('0', '9')) {
                         negatedConst = true;
                         break;

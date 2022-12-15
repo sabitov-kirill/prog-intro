@@ -1,16 +1,6 @@
 package expression;
 
-import java.util.List;
-import java.util.Set;
-
 public class OperatorFactory {
-    public static final List<Set<String>> OPERATORS_BY_PRIOR = List.of(
-            Set.of("set", "clear"), // 5
-            Set.of("+", "-"),       // 100
-            Set.of("*", "/"),       // 200
-            Set.of("-", "count")    // 300, Unary negation
-    );
-
     private OperatorFactory() {
         // Not used
     }
@@ -23,6 +13,8 @@ public class OperatorFactory {
             case "clear" -> new ClearBit(left, right);
             case "*" -> new Multiply(left, right);
             case "/" -> new Divide(left, right);
+            case "min" -> new Min(left, right);
+            case "max" -> new Max(left, right);
             default -> throw new IllegalArgumentException("Unknown operator sign '" + sign + "'");
         };
     }

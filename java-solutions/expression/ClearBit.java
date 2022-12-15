@@ -2,7 +2,7 @@ package expression;
 
 public class ClearBit extends AbstractBinaryOperator {
     public ClearBit(CommonExpression left, CommonExpression right) {
-        super(left, right, false, false, true, 5);
+        super(left, right, false, false, true, 50);
     }
 
     @Override

@@ -6,5 +6,7 @@ package expression.parser;
 public interface CharSource {
     boolean hasNext();
     char next();
+    void setAnchor();
+    void returnToAnchor();
     IllegalArgumentException error(String message);
 }
