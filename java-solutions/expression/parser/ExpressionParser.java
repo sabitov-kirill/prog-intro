@@ -1,6 +1,8 @@
 package expression.parser;
 
 import expression.*;
+import static expression.OperatorFactory.OPERATORS_BY_PRIOR;
+
 
 import java.util.List;
 import java.util.Set;
@@ -13,11 +15,6 @@ public class ExpressionParser implements TripleParser {
     }
 
     private static class ParserImpl extends BaseParser {
-        private static final List<Set<String>> OPERATORS_BY_PRIOR = List.of(
-            Set.of("+", "-"), // 0
-            Set.of("*", "/"), // 1
-            Set.of("-")       // 2, Unary negation
-        );
         private static final int MAX_PRIOR = OPERATORS_BY_PRIOR.size() - 1;
 
         public ParserImpl(CharSource source) {

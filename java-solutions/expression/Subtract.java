@@ -2,7 +2,7 @@ package expression;
 
 public class Subtract extends AbstractBinaryOperator {
     public Subtract(CommonExpression left, CommonExpression right) {
-        super(left, right, false, false, true, 0);
+        super(left, right, false, false, true, 100);
     }
 
     @Override

@@ -2,7 +2,7 @@ package expression;
 
 public class Negate extends AbstractUnaryOperator {
     public Negate(CommonExpression operand) {
-        super(operand, 3);
+        super(operand, 300);
     }
 
     @Override

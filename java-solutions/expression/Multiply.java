@@ -2,7 +2,7 @@ package expression;
 
 public class Multiply extends AbstractBinaryOperator {
     public Multiply(CommonExpression left, CommonExpression right) {
-        super(left, right, true, true, true, 1);
+        super(left, right, true, true, true, 200);
     }
 
     @Override
