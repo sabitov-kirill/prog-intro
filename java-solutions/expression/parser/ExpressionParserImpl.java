@@ -4,6 +4,12 @@ import expression.*;
 
 import static expression.parser.PriorityLevel.OPERATORS_BY_PRIOR;
 
+
+// :NOTE:  Expected argument at argument position (3) (for expression f=1 + (x * y - ) + 3)
+// непонятно, что такое позиция, особенно если закинуть побольше унарных минусов
+
+// :NOTE:  Expected argument at argument position (0) (for expression f=-2147483649)
+// вполне себе аргумент, здесь должно быть другое сообщение
 public class ExpressionParserImpl extends BaseParser {
     private static final int MAX_PRIOR = OPERATORS_BY_PRIOR.size() - 1;
     private final OperatorFactory operatorFactory;
@@ -31,9 +37,9 @@ public class ExpressionParserImpl extends BaseParser {
         //     | '(' Term(n) ')' <binary operator with priority n> '(' Term(n) ')'
         //     | <unary operator with priority n> Term(n - 1)
         //     | <unary operator with priority n> '(' Term(n) ')'
-        //     | [<whitespace>+] Term [<whitespace>+];
+        //     | [<whitespace>+] Term(n) [<whitespace>+];
 
-        // Variable := 'x' | 'y' | 'z' | <whitespace>+;
+        // Variable := 'x' | 'y' | 'z';
 
         // Number := <'1' to '9'> <'0' to '9'>+
         //     | '-' Number
@@ -105,7 +111,7 @@ public class ExpressionParserImpl extends BaseParser {
         return new Variable(String.valueOf(take()));
     }
 
-    private Const takeConst(boolean isNegated) throws ParserArgumentExpectedException, ParserUnexpectedCharException {
+    private Const takeConst(boolean isNegated) throws ParserArgumentExpectedException {
         StringBuilder integerBuilder = new StringBuilder();
         if (isNegated) {
             integerBuilder.append('-');
