@@ -21,14 +21,15 @@ public class ExpressionParserImpl extends BaseParser {
     }
 
     public CommonExpression parse()
-            throws ParserArgumentExpectedException, ParserEOFException, ParserUnexpectedCharException {
+            throws ParserArgumentExpectedException, ParserEOFException,
+            ParserUnexpectedCharException, ParserConstantOverflowException {
         CommonExpression expression = parseTerm(0);
         expectEof();
         return expression;
     }
 
     public CommonExpression parseTerm(int priority)
-            throws ParserArgumentExpectedException, ParserUnexpectedCharException {
+            throws ParserArgumentExpectedException, ParserUnexpectedCharException, ParserConstantOverflowException {
         // Unary priority levels parsed separated
         // (1, isUnary) -> (2, isUnary) -> ... -> (MAX_PRIOR, true)
 
@@ -74,7 +75,8 @@ public class ExpressionParserImpl extends BaseParser {
         return result;
     }
 
-    private CommonExpression parseUnary() throws ParserArgumentExpectedException, ParserUnexpectedCharException {
+    private CommonExpression parseUnary()
+            throws ParserArgumentExpectedException, ParserUnexpectedCharException, ParserConstantOverflowException {
         skipWhitespace();
 
         if (take('(')) {
@@ -111,7 +113,7 @@ public class ExpressionParserImpl extends BaseParser {
         return new Variable(String.valueOf(take()));
     }
 
-    private Const takeConst(boolean isNegated) throws ParserArgumentExpectedException {
+    private Const takeConst(boolean isNegated) throws ParserArgumentExpectedException, ParserConstantOverflowException {
         StringBuilder integerBuilder = new StringBuilder();
         if (isNegated) {
             integerBuilder.append('-');
@@ -119,11 +121,14 @@ public class ExpressionParserImpl extends BaseParser {
 
         skipWhitespace();
         takeInteger(integerBuilder);
+        if (integerBuilder.isEmpty()) {
+            throw new ParserArgumentExpectedException(source.getPosition(), sourceData);
+        }
 
         try {
             return new Const(Integer.parseInt(integerBuilder.toString()));
         } catch (NumberFormatException e) {
-            throw new ParserArgumentExpectedException(currentTokenPosition, sourceData);
+            throw new ParserConstantOverflowException(integerBuilder.toString(), sourceData);
         }
     }
 
