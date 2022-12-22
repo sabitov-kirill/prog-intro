@@ -18,7 +18,12 @@ public class BaseParser {
     }
 
     protected ParserUnexpectedCharException error(char expected) {
-        return new ParserUnexpectedCharException(readableChar(expected), readableChar(ch), source.getPosition(), sourceData);
+        return new ParserUnexpectedCharException(
+                readableChar(expected),
+                readableChar(ch),
+                eof() ? source.getPosition() + 1 : source.getPosition(),
+                eof() ? sourceData + ' ' : sourceData
+        );
     }
 
     protected String readableChar(char ch) {
