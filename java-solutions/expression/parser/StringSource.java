@@ -12,6 +12,10 @@ public class StringSource implements CharSource {
         this.data = data;
     }
 
+    public String getData() {
+        return data;
+    }
+
     @Override
     public boolean hasNext() {
         return pos < data.length();
@@ -23,6 +27,11 @@ public class StringSource implements CharSource {
     }
 
     @Override
+    public int getPosition() {
+        return pos;
+    }
+
+    @Override
     public void setAnchor() {
         anchorPos = pos;
     }
@@ -30,10 +39,5 @@ public class StringSource implements CharSource {
     @Override
     public void returnToAnchor() {
         pos = anchorPos;
-    }
-
-    @Override
-    public IllegalArgumentException error(final String message) {
-        return new IllegalArgumentException("At position (" + pos + "): " + message);
     }
 }

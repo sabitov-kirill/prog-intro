@@ -17,6 +17,6 @@ public class Max extends AbstractBinaryOperator {
 
     @Override
     public double evaluateImpl(double a, double b) {
-        return Math.max(a, b);
+        return a >= b ? a : b;
     }
 }

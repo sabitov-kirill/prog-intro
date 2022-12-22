@@ -7,16 +7,22 @@ import java.util.function.Supplier;
  */
 public class BaseParser {
     private static final char END = '\0';
-    private final CharSource source;
     private char ch = 0xffff;
+    protected final CharSource source;
+    protected final String sourceData;
 
-    protected BaseParser(final CharSource source) {
-        this.source = source;
+    protected BaseParser(final String sourceData) {
+        this.source = new StringSource(sourceData);
+        this.sourceData = sourceData;
         take();
     }
 
-    protected IllegalArgumentException error(final String message) {
-        return source.error(message);
+    protected ParserUnexpectedCharException error(char expected) {
+        return new ParserUnexpectedCharException(readableChar(expected), readableChar(ch), source.getPosition(), sourceData);
+    }
+
+    protected String readableChar(char ch) {
+        return ch == END ? "EOF" : "'" + ch + "'";
     }
 
     protected char take() {
@@ -27,6 +33,25 @@ public class BaseParser {
 
     protected boolean test(final char expected) {
         return ch == expected;
+    }
+
+    protected boolean test(final String expected) {
+        boolean result = true;
+        char anchorChar = ch;
+        source.setAnchor();
+
+        for (int i = 0; i < expected.length(); i++) {
+            if (!test(expected.charAt(i))) {
+                result = false;
+                break;
+            } else {
+                take();
+            }
+        }
+
+        ch = anchorChar;
+        source.returnToAnchor();
+        return result;
     }
 
     protected boolean take(final char expected) {
@@ -67,7 +92,7 @@ public class BaseParser {
         }
     }
 
-    protected void takeInteger(final StringBuilder sb) {
+    protected boolean takeInteger(final StringBuilder sb) {
         if (take('-')) {
             sb.append('-');
         }
@@ -76,19 +101,26 @@ public class BaseParser {
         } else if (between('1', '9')) {
             takeDigits(sb);
         } else {
-            throw error("Invalid number '" + ch + "'");
+            return false;
         }
+        return true;
     }
 
-    protected void expect(final char expected) {
+    protected void expect(final char expected) throws ParserUnexpectedCharException {
         if (!take(expected)) {
-            throw error("Expected '" + expected + "', found '" + ch + "'");
+            throw error(expected);
         }
     }
 
-    protected void expect(final String value) {
+    protected void expect(final String value) throws ParserUnexpectedCharException {
         for (final char c : value.toCharArray()) {
             expect(c);
+        }
+    }
+
+    protected void expectWhitespace() throws ParserUnexpectedCharException {
+        if (!takeWhitespace()) {
+            throw error(' ');
         }
     }
 

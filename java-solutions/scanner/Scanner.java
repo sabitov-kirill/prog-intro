@@ -18,7 +18,7 @@ public class Scanner implements Closeable {
     private Reader source;
 
     // Default size of input buffer
-    private final int BUFFER_DEFAULT_SIZE = 8192;
+    private final int BUFFER_DEFAULT_SIZE = 64;
     // Input chars buffer
     private char[] buffer = new char[BUFFER_DEFAULT_SIZE];
     // Current position of last read char in buffer (from source reader)

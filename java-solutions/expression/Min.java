@@ -12,7 +12,7 @@ public class Min extends AbstractBinaryOperator {
 
     @Override
     public int evaluateImpl(int a, int b) {
-        return Math.min(a, b);
+        return a <= b ? a : b;
     }
 
     @Override
