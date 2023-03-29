@@ -10,7 +10,7 @@
 8.  Примеры работы программы:
 
     | Входной файл | Выходной файл |
-            | --- | --- |
+    | --- | --- |
     | To be, or not to be, that is the question: | to 2 1 5<br>    be 2 2 6<br>    or 1 3<br>    not 1 4<br>    that 1 7<br>    is 1 8<br>    the 1 9<br>    question 1 10 |
     | Monday's child is fair of face.<br>    Tuesday's child is full of grace. | monday's 1 1<br>    child 2 2 8<br>    is 2 3 9<br>    fair 1 4<br>    of 2 5 11<br>    face 1 6<br>    tuesday's 1 7<br>    full 1 10<br>    grace 1 12 |
     | Шалтай-Болтай<br>    Сидел на стене.<br>    Шалтай-Болтай<br>    Свалился во сне. | шалтай-болтай 2 1 5<br>    сидел 1 2<br>    на 1 3<br>    стене 1 4<br>    свалился 1 6<br>    во 1 7<br>    сне 1 8 |
