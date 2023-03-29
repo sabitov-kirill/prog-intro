@@ -1,3 +1,5 @@
+package sum;
+
 public class Sum {
     public static void main(String[] args) {
         String text = String.join(" ", args) + " ";

@@ -1,3 +1,7 @@
+package wspp;
+
+import wordStat.WordStat;
+
 import java.io.*;
 import java.util.LinkedHashMap;
 import java.util.Map;

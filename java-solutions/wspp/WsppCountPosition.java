@@ -1,4 +1,7 @@
+package wspp;
+
 import scanner.Scanner;
+import wordStat.WordStat;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

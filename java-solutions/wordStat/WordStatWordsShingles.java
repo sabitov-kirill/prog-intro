@@ -1,3 +1,5 @@
+package wordStat;
+
 import java.io.*;
 import java.util.Map;
 import java.util.TreeMap;
